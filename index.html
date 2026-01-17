@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国分省交互地图</title>
+    <!-- 引入 Leaflet 的CSS和JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- 引入我们自己的样式和脚本 -->
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <!-- 为方便演示数据，引入jQuery（非必须，可用原生Fetch API替代） -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-map-marked-alt"></i> 中国分省交互地图</h1>
+            <p class="subtitle">将鼠标悬停在任一省份上可查看其简称和首府，点击省份可跳转到该省的百度百科页面。</p>
+        </header>
+        <main>
+            <!-- 地图容器 -->
+            <div id="chinaMap"></div>
+            <!-- 侧边信息面板 -->
+            <div class="side-panel">
+                <h2><i class="fas fa-info-circle"></i> 省份信息</h2>
+                <div class="panel-content">
+                    <p>鼠标悬停或点击地图上的省份以查看详细信息。</p>
+                    <div id="provinceInfo">
+                        <h3 id="provinceName">-</h3>
+                        <p><strong>简称：</strong><span id="provinceShortName">-</span></p>
+                        <p><strong>首府：</strong><span id="provinceCapital">-</span></p>
+                        <p><strong>区号：</strong><span id="provinceCode">-</span></p>
+                        <a id="provinceLink" href="#" target="_blank" class="info-link">查看详情 >></a>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>数据仅供参考 | 地图渲染基于 <a href="https://leafletjs.com/" target="_blank">Leaflet</a> 和 OpenStreetMap</p>
+        </footer>
+    </div>
+
+    <!-- 引入一个图标库用于装饰性图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</body>
+</html>
