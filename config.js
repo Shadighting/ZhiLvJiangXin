@@ -8,10 +8,14 @@ window.MapConfig = {
     
     // 2. 地图显示配置
     mapView: {
-        center: [35.0, 105.0],  // 中国中心点
-        zoom: 4,
-        minZoom: 9,
+        center: [35.0, 105.0],  
+        minZoom: 5,
         maxZoom: 15,
+    },
+
+    featurePoint: {
+        url: "data/point.geojson",
+        layername: "特点",
     },
     
     // 3. 样式配置

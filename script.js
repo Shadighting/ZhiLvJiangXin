@@ -1,6 +1,5 @@
-// script.js - 完全离线版本
 $(document).ready(function () {
-    console.log("🚀 开始初始化离线地图系统...");
+    console.log("初始化...");
     
     // ==================== 应用程序状态 ====================
     var appState = {
@@ -48,12 +47,12 @@ $(document).ready(function () {
     
     // 1. 初始化地图
     function initMap() {
-        console.log("🗺️ 初始化地图...");
+        console.log("初始化地图...");
         updateStatus('mapStatus', 'loading', '初始化地图');
         
         var bound = L.latLngBounds(
-            [34.23597,108.941816],  // 西南角：纬度(lat)、经度(lng)
-            [34.29799,109.025617]   // 东北角：纬度(lat)、经度(lng)
+            [34.235,108.941816],  // 西南角：纬度(lat)、经度(lng)
+            [34.3,109.026]   // 东北角：纬度(lat)、经度(lng)
         );
 
         
@@ -68,11 +67,12 @@ $(document).ready(function () {
                 maxBoundsViscosity: 0.8,
             });
             
-            // 添加一个简单的自定义底图（使用Leaflet内置的灰色背景）
+            // 添加一个简单的自定义底图
             L.tileLayer('', {
                 attribution: '离线地图系统'
             }).addTo(appState.map);
 
+            
             
             // 添加比例尺
             if (MapConfig.appSettings.showScaleControl) {
@@ -85,6 +85,20 @@ $(document).ready(function () {
             
             // 创建省份图层组
             appState.provinceLayers = L.layerGroup().addTo(appState.map);
+
+            // L.marker([34.2667, 108.9653])  // [纬度, 经度]
+            // .addTo(appState.map)         // 添加到地图
+            // .bindPopup('这是一个点标记');
+
+            $.getJSON("data/point.geojson", function(data) {
+            L.geoJSON(data, {
+                pointToLayer: function(feature, latlng) {
+                    return L.marker(latlng)
+                        .bindPopup(feature.properties.BM_Name);
+                }
+            }).addTo(appState.map);
+        });
+
             
             updateStatus('mapStatus', 'loaded', '地图就绪');
             console.log("✅ 地图初始化完成");
@@ -99,7 +113,7 @@ $(document).ready(function () {
     
     // 2. 加载省份信息数据
     function loadProvinceInfo() {
-        console.log("📚 加载省份信息...");
+        console.log("加载省份信息...");
         updateStatus('dataStatus', 'loading', '加载省份信息');
         
         return new Promise(function(resolve, reject) {
@@ -139,7 +153,7 @@ $(document).ready(function () {
     
     // 3. 加载GeoJSON地图数据
     function loadGeoJson() {
-        console.log("🗾 加载地图数据...");
+        console.log("加载地图数据...");
         
         return new Promise(function(resolve, reject) {
             $.ajax({
@@ -168,7 +182,7 @@ $(document).ready(function () {
                 error: function(xhr, status, error) {
                     var errorMsg = "地图数据加载失败: ";
                     if (xhr.status === 404) {
-                        errorMsg += "文件未找到，请确保 provinces.geojson 文件存在";
+                        errorMsg += "文件未找到，请确保 geojson 文件存在";
                     } else if (status === "parsererror") {
                         errorMsg += "GeoJSON格式错误";
                     } else {
@@ -185,7 +199,7 @@ $(document).ready(function () {
     
     // 4. 渲染地图
     function renderMap(geoJsonData) {
-        console.log("🎨 渲染地图...");
+        console.log("渲染地图...");
         
         // 清空现有图层
         if (appState.provinceLayers) {
@@ -294,7 +308,7 @@ $(document).ready(function () {
             // 显示省份信息
             updateProvinceInfo(provinceName);
             
-            console.log("📍 点击省份:", provinceName);
+            console.log("点击省份:", provinceName);
         });
     }
     
@@ -334,13 +348,13 @@ $(document).ready(function () {
         }
         
         // 尝试模糊匹配
-        var cleanName = geoJsonName.replace(/省|市|自治区|壮族自治区|回族自治区|维吾尔自治区|特别行政区/g, '');
-        for (var key in appState.provinceInfoDB) {
-            var cleanKey = key.replace(/省|市|自治区|壮族自治区|回族自治区|维吾尔自治区|特别行政区/g, '');
-            if (cleanName === cleanKey || key.includes(cleanName) || cleanName.includes(cleanKey)) {
-                return appState.provinceInfoDB[key];
-            }
-        }
+        // var cleanName = geoJsonName.replace(/省|市|自治区|壮族自治区|回族自治区|维吾尔自治区|特别行政区/g, '');
+        // for (var key in appState.provinceInfoDB) {
+        //     var cleanKey = key.replace(/省|市|自治区|壮族自治区|回族自治区|维吾尔自治区|特别行政区/g, '');
+        //     if (cleanName === cleanKey || key.includes(cleanName) || cleanName.includes(cleanKey)) {
+        //         return appState.provinceInfoDB[key];
+        //     }
+        // }
         
         // 返回默认信息
         return {
@@ -353,14 +367,14 @@ $(document).ready(function () {
     
     // 9. 初始化应用程序
     async function initializeApp() {
-        console.log("⚡ 开始初始化应用程序...");
+        console.log("开始初始化应用程序...");
         
         try {
             // 1. 初始化地图
             if (!initMap()) {
                 return;
             }
-            
+
             // 2. 并行加载数据
             await Promise.all([
                 loadProvinceInfo(),
@@ -392,10 +406,8 @@ $(document).ready(function () {
         $('.side-panel').removeClass('has-selection');
     }
     
-    // ==================== 启动应用程序 ====================
     initializeApp();
     
-    // ==================== 全局API（可选） ====================
     window.MapApp = {
         // 重新加载数据
         reloadData: function() {
