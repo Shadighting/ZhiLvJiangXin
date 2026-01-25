@@ -1,43 +1,51 @@
+/* 重置和基础样式 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     min-height: 100vh;
     padding: 20px;
     color: #333;
+    line-height: 1.6;
 }
 
+/* 容器布局 */
 .container {
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    gap: 20px;
     min-height: 95vh;
 }
 
+/* 头部样式 */
 header {
     text-align: center;
-    margin-bottom: 25px;
     padding: 25px;
-    background: rgba(255, 255, 255, 0.92);
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 h1 {
     color: #2c3e50;
     margin-bottom: 10px;
-    font-size: 2.4rem;
+    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
 }
 
 h1 i {
     color: #3498db;
-    margin-right: 15px;
 }
 
 .subtitle {
@@ -45,9 +53,9 @@ h1 i {
     font-size: 1.1rem;
     max-width: 800px;
     margin: 0 auto;
-    line-height: 1.6;
 }
 
+/* 主要内容区域 */
 main {
     display: flex;
     flex-wrap: wrap;
@@ -55,77 +63,175 @@ main {
     flex: 1;
 }
 
-#chinaMap {
+.map-container {
     flex: 1;
     min-width: 300px;
-    min-height: 600px;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    border: 1px solid #ddd;
-    z-index: 1;
+    min-height: 500px;
 }
 
+/* 侧边栏样式 */
 .side-panel {
-    width: 320px;
+    width: 350px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 25px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
 }
 
 .side-panel h2 {
     color: #2c3e50;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     padding-bottom: 15px;
     border-bottom: 2px solid #eee;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.panel-content {
-    flex: 1;
+.side-panel h2 i {
+    color: #3498db;
 }
 
-#provinceInfo {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 12px;
-    border-left: 5px solid #3498db;
-    margin-top: 20px;
-    transition: all 0.3s ease;
+/* 操作提示 */
+.instruction {
+    background: #e8f4fc;
+    border-left: 4px solid #3498db;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
 }
 
-#provinceInfo h3 {
+.instruction p {
+    margin: 5px 0;
     color: #2c3e50;
-    margin-bottom: 15px;
-    font-size: 1.8rem;
 }
 
-#provinceInfo p {
-    margin-bottom: 12px;
-    line-height: 1.5;
-}
-
-.info-link {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 20px;
-    background: linear-gradient(to right, #3498db, #2ecc71);
-    color: white;
-    text-decoration: none;
-    border-radius: 50px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+.instruction i {
+    color: #3498db;
+    margin-right: 8px;
+    width: 16px;
     text-align: center;
 }
 
-.info-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 15px rgba(52, 152, 219, 0.4);
+/* 信息网格 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 20px 0;
 }
 
+.info-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #3498db;
+    transition: transform 0.2s;
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+}
+
+.info-item label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.info-item label i {
+    color: #3498db;
+    margin-right: 5px;
+    width: 16px;
+}
+
+.info-item span {
+    display: block;
+    color: #34495e;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* 省份详情 */
+#provinceDetails {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #2ecc71;
+}
+
+#provinceDetailText {
+    color: #555;
+    line-height: 1.7;
+}
+
+/* 数据状态指示器 */
+.data-status {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.status-item:hover {
+    background: #e9ecef;
+}
+
+.status-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.status-indicator {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-indicator i {
+    font-size: 0.7rem;
+}
+
+.status-indicator i.fa-circle {
+    color: #f1c40f;
+}
+
+.status-indicator.loaded i.fa-circle {
+    color: #2ecc71;
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.error i.fa-circle {
+    color: #e74c3c;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* 页脚 */
 footer {
     text-align: center;
     margin-top: 30px;
@@ -135,40 +241,70 @@ footer {
     border-top: 1px solid #eee;
 }
 
+.footer-note {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    color: #95a5a6;
+}
+
+/* 响应式设计 */
 @media (max-width: 1200px) {
     main {
         flex-direction: column;
     }
+    
     .side-panel {
         width: 100%;
     }
-    #chinaMap {
-        min-height: 500px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        gap: 15px;
+    }
+    
+    header {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .map-container {
+        min-height: 400px;
     }
 }
 
-
-/* 移除Leaflet地图元素的点击焦点轮廓 */
-.leaflet-container:focus,
-.leaflet-container:active,
-.leaflet-container:focus-visible,
-.leaflet-container:focus-within {
-    outline: none !important;
+/* Leaflet自定义样式 */
+.leaflet-container {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
 
-/* 移除路径元素的焦点样式 */
-.leaflet-interactive:focus {
-    outline: none !important;
-    box-shadow: none !important;
+.leaflet-popup-content {
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-/* 移除所有Leaflet地图相关元素的焦点轮廓 */
-.leaflet-map-pane,
-.leaflet-tile-pane,
-.leaflet-overlay-pane,
-.leaflet-shadow-pane,
-.leaflet-marker-pane,
-.leaflet-tooltip-pane,
-.leaflet-popup-pane {
-    outline: none !important;
+.leaflet-tooltip {
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #3498db;
+}
+
+/* 自定义省份工具提示 */
+.province-tooltip {
+    font-weight: 600;
+    background: rgba(52, 152, 219, 0.9);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
 }
