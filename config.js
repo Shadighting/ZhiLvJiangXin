@@ -2,15 +2,15 @@
 window.MapConfig = {
     // 1. 数据文件配置（相对路径）
     dataFiles: {
-        geoJson: "data/xincheng.geojson",        // GeoJSON地图数据
+        geoJson: "data/YXF.geojson",        // GeoJSON地图数据
         provinceInfo: "data/province-info.json"   // 省份信息数据
     },
     
     // 2. 地图显示配置
     mapView: {
         center: [35.0, 105.0],  
-        minZoom: 5,
-        maxZoom: 15,
+        minZoom: 17,
+        maxZoom: 20,
     },
 
     featurePoint: {

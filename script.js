@@ -51,8 +51,8 @@ $(document).ready(function () {
         updateStatus('mapStatus', 'loading', '初始化地图');
         
         var bound = L.latLngBounds(
-            [34.235,108.941816],  // 西南角：纬度(lat)、经度(lng)
-            [34.3,109.026]   // 东北角：纬度(lat)、经度(lng)
+            [34.26596164508176,108.96468222141266],  // 西南角：纬度(lat)、经度(lng)
+            [34.26686603988667,108.9661386609078]   // 东北角：纬度(lat)、经度(lng)
         );
 
         
@@ -238,6 +238,7 @@ $(document).ready(function () {
         if (MapConfig.appSettings.autoFitBounds && geoJsonData.features.length > 0) {
             var bounds = L.geoJSON(geoJsonData).getBounds();
             appState.map.fitBounds(bounds, { padding: [50, 50] });
+            console.log(bounds);
         }
         
         console.log("✅ 地图渲染完成");
@@ -306,7 +307,7 @@ $(document).ready(function () {
             appState.lastClickedProvinceName = provinceName;
             
             // 显示省份信息
-            updateProvinceInfo(provinceName);
+            // updateProvinceInfo(provinceName);
             
             console.log("点击省份:", provinceName);
         });

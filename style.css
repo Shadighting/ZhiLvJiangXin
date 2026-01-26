@@ -307,3 +307,28 @@ footer {
     border-radius: 4px;
     padding: 5px 10px;
 }
+
+/* 移除Leaflet地图元素的点击焦点轮廓 */
+.leaflet-container:focus,
+.leaflet-container:active,
+.leaflet-container:focus-visible,
+.leaflet-container:focus-within {
+    outline: none !important;
+}
+
+/* 移除路径元素的焦点样式 */
+.leaflet-interactive:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* 移除所有Leaflet地图相关元素的焦点轮廓 */
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane {
+    outline: none !important;
+}
