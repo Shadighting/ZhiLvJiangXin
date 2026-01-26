@@ -2,9 +2,9 @@
 "type": "FeatureCollection",
 "name": "测试点位",
 "features": [
-{ "type": "Feature", "properties": { "BM_Name": "西安传统甑糕", "BM_Time": "2026-01-24 17:10:17" }, "geometry": { "type": "Point", "coordinates": [ 108.965278921775436, 34.266702675363618 ] } },
-{ "type": "Feature", "properties": { "BM_Name": "油泼辣子", "BM_Time": "2026-01-24 17:10:20" }, "geometry": { "type": "Point", "coordinates": [ 108.965227256700828, 34.266738486030526 ] } },
-{ "type": "Feature", "properties": { "BM_Name": "白火石汆汤", "BM_Time": "2026-01-24 17:12:47" }, "geometry": { "type": "Point", "coordinates": [ 108.965692242372384, 34.266394152063206 ] } },
-{ "type": "Feature", "properties": { "BM_Name": "戏曲", "BM_Time": "2026-01-24 17:14:19" }, "geometry": { "type": "Point", "coordinates": [ 108.965610578222169, 34.26668614735835 ] } }
+{ "type": "Feature", "properties": { "name": "zenggao", "BM_Name": "西安传统甑糕", "BM_Time": "2026-01-24 17:10:17" }, "geometry": { "type": "Point", "coordinates": [ 108.965278921775436, 34.266702675363618 ] } },
+{ "type": "Feature", "properties": { "name": "youpuo","BM_Name": "油泼辣子", "BM_Time": "2026-01-24 17:10:20" }, "geometry": { "type": "Point", "coordinates": [ 108.965227256700828, 34.266738486030526 ] } },
+{ "type": "Feature", "properties": { "name": "baihuo","BM_Name": "白火石汆汤", "BM_Time": "2026-01-24 17:12:47" }, "geometry": { "type": "Point", "coordinates": [ 108.965692242372384, 34.266394152063206 ] } },
+{ "type": "Feature", "properties": { "name": "xiqu","BM_Name": "戏曲", "BM_Time": "2026-01-24 17:14:19" }, "geometry": { "type": "Point", "coordinates": [ 108.965610578222169, 34.26668614735835 ] } }
 ]
 }

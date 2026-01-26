@@ -86,17 +86,32 @@ $(document).ready(function () {
             // 创建省份图层组
             appState.provinceLayers = L.layerGroup().addTo(appState.map);
 
-            // L.marker([34.2667, 108.9653])  // [纬度, 经度]
-            // .addTo(appState.map)         // 添加到地图
-            // .bindPopup('这是一个点标记');
-
+            //创建点位图层
             $.getJSON("data/point.geojson", function(data) {
-            L.geoJSON(data, {
-                pointToLayer: function(feature, latlng) {
-                    return L.marker(latlng)
-                        .bindPopup(feature.properties.BM_Name);
-                }
-            }).addTo(appState.map);
+                L.geoJSON(data, {
+                    // 1. 原有的点位转图层逻辑
+                    pointToLayer: function(feature, latlng) {
+                        return L.marker(latlng)
+                            .bindPopup(feature.properties.BM_Name); // 原弹窗绑定逻辑
+                    },
+                    // 2.为每个点位绑定点击事件
+                    onEachFeature: function(feature, layer) {
+                        // ========== 自定义点击逻辑 ==========
+                        layer.on('click', function(e) {
+                            const targetUrl = "feature/zenggao/site/index.html";
+                            window.open(targetUrl, '_blank');
+                        });
+
+                        layer.on('mouseover', function() {
+                            this.openPopup(); // 打开当前点位的弹窗
+                        });
+
+                        // 2. 鼠标移出：关闭弹窗
+                        layer.on('mouseout', function() {
+                            this.closePopup(); // 关闭当前点位的弹窗
+                        });
+                    }
+                }).addTo(appState.map);
         });
 
             
@@ -111,45 +126,6 @@ $(document).ready(function () {
         }
     }
     
-    // 2. 加载省份信息数据
-    function loadProvinceInfo() {
-        console.log("加载省份信息...");
-        updateStatus('dataStatus', 'loading', '加载省份信息');
-        
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: MapConfig.dataFiles.provinceInfo,
-                dataType: 'json',
-                success: function(data) {
-                    if (data && typeof data === 'object') {
-                        appState.provinceInfoDB = data;
-                        console.log("✅ 省份信息加载成功，共 " + Object.keys(data).length + " 个省份");
-                        updateStatus('dataStatus', 'loaded', '信息已加载 (' + Object.keys(data).length + '个省份)');
-                        resolve(data);
-                    } else {
-                        throw new Error("数据格式不正确");
-                    }
-                },
-                error: function(xhr, status, error) {
-                    var errorMsg = "省份信息加载失败: ";
-                    if (xhr.status === 404) {
-                        errorMsg += "文件未找到 (404)";
-                    } else if (status === "parsererror") {
-                        errorMsg += "JSON格式错误";
-                    } else {
-                        errorMsg += status;
-                    }
-                    
-                    console.warn("⚠️ " + errorMsg);
-                    appState.provinceInfoDB = {};
-                    updateStatus('dataStatus', 'error', '信息加载失败');
-                    
-                    // 不是关键错误，继续执行
-                    resolve({});
-                }
-            });
-        });
-    }
     
     // 3. 加载GeoJSON地图数据
     function loadGeoJson() {
@@ -211,19 +187,8 @@ $(document).ready(function () {
             style: MapConfig.styles.default,
             
             onEachFeature: function (feature, layer) {
-                // 获取省份名称
-                var provinceName = extractProvinceName(feature);
-                
-                // 存储信息到图层
-                layer.provinceName = provinceName;
-                layer.feature = feature;
-                
                 // 添加到图层组
                 appState.provinceLayers.addLayer(layer);
-                
-                // 绑定事件
-                bindLayerEvents(layer, provinceName);
-                
                 // 添加工具提示
                 layer.bindTooltip(provinceName, {
                     permanent: false,
@@ -238,133 +203,11 @@ $(document).ready(function () {
         if (MapConfig.appSettings.autoFitBounds && geoJsonData.features.length > 0) {
             var bounds = L.geoJSON(geoJsonData).getBounds();
             appState.map.fitBounds(bounds, { padding: [50, 50] });
-            console.log(bounds);
         }
         
         console.log("✅ 地图渲染完成");
     }
     
-    // 5. 提取省份名称
-    function extractProvinceName(feature) {
-        if (!feature.properties) {
-            return "未知区域";
-        }
-        
-        // 尝试常见的中文名称字段
-        var nameFields = ['name', '名称', 'NAME', '省名', 'province', 'Province', 'CN'];
-        
-        for (var i = 0; i < nameFields.length; i++) {
-            if (feature.properties[nameFields[i]]) {
-                return feature.properties[nameFields[i]];
-            }
-        }
-        
-        // 尝试第一个属性值
-        var props = feature.properties;
-        for (var key in props) {
-            if (props.hasOwnProperty(key) && props[key]) {
-                return props[key];
-            }
-        }
-        
-        return "未命名区域";
-    }
-    
-    // 6. 绑定图层事件
-    function bindLayerEvents(layer, provinceName) {
-        // 悬停事件
-        layer.on('mouseover', function (e) {
-            if (appState.currentHighlightedLayer !== this) {
-                this.setStyle(MapConfig.styles.hover);
-                this.bringToFront();
-            }
-        });
-        
-        layer.on('mouseout', function (e) {
-            if (appState.currentHighlightedLayer !== this) {
-                this.setStyle(MapConfig.styles.default);
-            }
-        });
-        
-        // 点击事件
-        layer.on('click', function (e) {
-            // 阻止默认行为
-            if (e.originalEvent) {
-                e.originalEvent.preventDefault();
-            }
-            
-            // 清除之前的高亮
-            if (appState.currentHighlightedLayer && appState.currentHighlightedLayer !== this) {
-                appState.currentHighlightedLayer.setStyle(MapConfig.styles.default);
-            }
-            
-            // 高亮当前省份
-            this.setStyle(MapConfig.styles.selected);
-            this.bringToFront();
-            appState.currentHighlightedLayer = this;
-            
-            // 记录最后点击
-            appState.lastClickedProvinceName = provinceName;
-            
-            // 显示省份信息
-            // updateProvinceInfo(provinceName);
-            
-            console.log("点击省份:", provinceName);
-        });
-    }
-    
-    // 7. 更新省份信息显示
-    function updateProvinceInfo(provinceName) {
-        // 获取省份信息
-        var info = getProvinceInfo(provinceName);
-        
-        // 更新UI
-        $('#provinceName').text(provinceName);
-        $('#provinceShortName').text(info.shortName || '-');
-        $('#provinceCapital').text(info.capital || '-');
-        $('#provinceCode').text(info.code || '-');
-        $('#provinceDetailText').text(info.description || '暂无详细描述');
-        
-        // 隐藏默认描述
-        $('#provinceDescription').hide();
-        $('#provinceDetails').show();
-        
-        // 添加视觉反馈
-        $('.side-panel').addClass('has-selection');
-    }
-    
-    // 8. 获取省份信息（智能匹配）
-    function getProvinceInfo(geoJsonName) {
-        // 尝试直接匹配
-        if (appState.provinceInfoDB[geoJsonName]) {
-            return appState.provinceInfoDB[geoJsonName];
-        }
-        
-        // 尝试名称映射
-        if (MapConfig.nameMapping && MapConfig.nameMapping[geoJsonName]) {
-            var mappedName = MapConfig.nameMapping[geoJsonName];
-            if (appState.provinceInfoDB[mappedName]) {
-                return appState.provinceInfoDB[mappedName];
-            }
-        }
-        
-        // 尝试模糊匹配
-        // var cleanName = geoJsonName.replace(/省|市|自治区|壮族自治区|回族自治区|维吾尔自治区|特别行政区/g, '');
-        // for (var key in appState.provinceInfoDB) {
-        //     var cleanKey = key.replace(/省|市|自治区|壮族自治区|回族自治区|维吾尔自治区|特别行政区/g, '');
-        //     if (cleanName === cleanKey || key.includes(cleanName) || cleanName.includes(cleanKey)) {
-        //         return appState.provinceInfoDB[key];
-        //     }
-        // }
-        
-        // 返回默认信息
-        return {
-            shortName: "?",
-            capital: "?",
-            code: "?",
-            description: "该省份的详细信息正在补充中..."
-        };
-    }
     
     // 9. 初始化应用程序
     async function initializeApp() {
@@ -378,7 +221,6 @@ $(document).ready(function () {
 
             // 2. 并行加载数据
             await Promise.all([
-                loadProvinceInfo(),
                 loadGeoJson()
             ]);
             
@@ -402,7 +244,7 @@ $(document).ready(function () {
         $('#provinceShortName').text('-');
         $('#provinceCapital').text('-');
         $('#provinceCode').text('-');
-        $('#provinceDetailText').text('点击地图上的省份查看详细信息');
+        $('#provinceDetailText').text('点击地图上的点位查看详细信息');
         $('#provinceDetails').show();
         $('.side-panel').removeClass('has-selection');
     }
