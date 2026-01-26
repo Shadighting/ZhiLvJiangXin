@@ -89,24 +89,33 @@ $(document).ready(function () {
             //创建点位图层
             $.getJSON("data/point.geojson", function(data) {
                 L.geoJSON(data, {
-                    // 1. 原有的点位转图层逻辑
+                    // 1. 点位转图层
                     pointToLayer: function(feature, latlng) {
-                        return L.marker(latlng)
-                            .bindPopup(feature.properties.BM_Name); // 原弹窗绑定逻辑
+                        // 1. 创建图片图标
+                        const customIcon = L.icon({
+                            iconUrl: "feature/pin.ico" , // 自定义图标路径（PNG/SVG）
+                            iconSize: [32, 32], // 图标大小（宽高）
+                            iconAnchor: [16, 32], // 锚点（底部中点，对准点位坐标）
+                            popupAnchor: [0, -32] // 弹窗相对于图标的偏移（避免遮挡图标）
+                        });
+
+                        // 2. 创建Marker并传入图片图标
+                        return L.marker(latlng, { icon: customIcon })
+                            .bindPopup(feature.properties.BM_Name);
                     },
                     // 2.为每个点位绑定点击事件
                     onEachFeature: function(feature, layer) {
                         // ========== 自定义点击逻辑 ==========
                         layer.on('click', function(e) {
-                            const targetUrl = "feature/zenggao/site/index.html";
-                            window.open(targetUrl, '_blank');
+                            const targetUrl = "feature/" + feature.properties.name + "/site/index.html";
+                            updateSidePanel(feature.properties);
+                            // window.open(targetUrl, '_blank');
                         });
+
 
                         layer.on('mouseover', function() {
                             this.openPopup(); // 打开当前点位的弹窗
                         });
-
-                        // 2. 鼠标移出：关闭弹窗
                         layer.on('mouseout', function() {
                             this.closePopup(); // 关闭当前点位的弹窗
                         });
@@ -235,6 +244,12 @@ $(document).ready(function () {
             console.error("❌ 应用程序初始化失败:", error);
             showError("初始化失败: " + error.message);
         }
+    }
+
+    function updateSidePanel(properties) {
+        const linksite="feature/"+properties.name+"/site/index.html";
+        $('#name').text(properties.BM_Name);
+        $('#FeatureSiteLink').attr('href', linksite);
     }
     
     // 10. 重置侧边栏

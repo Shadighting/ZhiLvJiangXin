@@ -47,12 +47,7 @@ h1 i {
     color: #3498db;
 }
 
-.subtitle {
-    color: #7f8c8d;
-    font-size: 1.1rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
+
 
 /* 主要内容区域 */
 main {
@@ -96,26 +91,9 @@ main {
 }
 
 /* 操作提示 */
-.instruction {
-    background: #e8f4fc;
-    border-left: 4px solid #3498db;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-}
 
-.instruction p {
-    margin: 5px 0;
-    color: #2c3e50;
-}
 
-.instruction i {
-    color: #3498db;
-    margin-right: 8px;
-    width: 16px;
-    text-align: center;
-}
+
 
 /* 信息网格 */
 .info-grid {
@@ -172,57 +150,6 @@ main {
     line-height: 1.7;
 }
 
-/* 数据状态指示器 */
-.data-status {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-.status-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    background: #f8f9fa;
-    border-radius: 6px;
-    transition: background 0.3s;
-}
-
-.status-item:hover {
-    background: #e9ecef;
-}
-
-.status-label {
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 0.9rem;
-}
-
-.status-indicator {
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.status-indicator i {
-    font-size: 0.7rem;
-}
-
-.status-indicator i.fa-circle {
-    color: #f1c40f;
-}
-
-.status-indicator.loaded i.fa-circle {
-    color: #2ecc71;
-    animation: pulse 2s infinite;
-}
-
-.status-indicator.error i.fa-circle {
-    color: #e74c3c;
-}
 
 @keyframes pulse {
     0% { opacity: 1; }
@@ -296,16 +223,6 @@ footer {
     font-weight: 600;
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid #3498db;
-}
-
-/* 自定义省份工具提示 */
-.province-tooltip {
-    font-weight: 600;
-    background: rgba(52, 152, 219, 0.9);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
 }
 
 /* 移除Leaflet地图元素的点击焦点轮廓 */
