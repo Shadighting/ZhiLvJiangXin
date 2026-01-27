@@ -43,7 +43,7 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-map"></i> 智旅匠新-数字地图</h1>
+            <h1><i class="fas fa-map" id="title"></i> 智旅匠新-数字地图</h1>
             
         </header>
         
@@ -63,8 +63,8 @@
                 
                 <div class="panel-content">
                     <div id="provinceInfo">
-                        <h3 id="provinceName">中国分省地图</h3>
-                        <p id="provinceDescription">点击任意省份开始探索</p>
+                        <h3 id="provinceName" class="sidetitle">永兴坊</h3>
+                        <p id="provinceDescription">点击任意点位开始探索</p>
                         
                         <div class="info-grid">
                             <div class="info-item">
@@ -75,13 +75,12 @@
                                 <label><i class="picture"></i> 图片：</label>
                                 <span id="picture">-</span>
                             </div>
-                            <a id="FeatureSiteLink" href="#" target="_blank" class="info-link">查看详情 >></a>
-                            
                         </div>
+
+                        <a id="NevigationLink" href="#" style="display: none;" class="info-link">导航</a>
+                        <a id="SiteLink" href="#" style="display: none;" class="info-link">查看详情</a>
                         
-                        <div id="provinceDetails">
-                            <p id="provinceDetailText">详细信息将在此显示</p>
-                        </div>
+                        
                     </div>
                 </div>
                 

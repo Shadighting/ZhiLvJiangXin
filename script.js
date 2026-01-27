@@ -67,7 +67,7 @@ $(document).ready(function () {
                 maxBoundsViscosity: 0.8,
             });
             
-            // 添加一个简单的自定义底图
+            // 添加自定义底图
             L.tileLayer('', {
                 attribution: '离线地图系统'
             }).addTo(appState.map);
@@ -86,6 +86,24 @@ $(document).ready(function () {
             // 创建省份图层组
             appState.provinceLayers = L.layerGroup().addTo(appState.map);
 
+            const imageUrl = 'feature/map.png'; // 本地图片路径
+                // 图片的地理边界：[[西南角经纬度], [东北角经纬度]]
+                const imageBounds = [
+                [34.26596164508176,108.96468222141266], // 西南角：纬度39.78，经度116.20
+                [34.26686603988667,108.9661386609078]  // 东北角：纬度40.05，经度116.65
+                ];
+
+            const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
+                opacity: 1, // 图片透明度
+                alt: 'Map', 
+                interactive: false, // 是否允许交互
+                zIndex:200,
+            });
+
+            // 3. 将图片图层添加到地图
+            imageLayer.addTo(appState.map);
+
+
             //创建点位图层
             $.getJSON("data/point.geojson", function(data) {
                 L.geoJSON(data, {
@@ -93,15 +111,18 @@ $(document).ready(function () {
                     pointToLayer: function(feature, latlng) {
                         // 1. 创建图片图标
                         const customIcon = L.icon({
-                            iconUrl: "feature/pin.ico" , // 自定义图标路径（PNG/SVG）
+                            iconUrl: "feature/pin.ico" , // 自定义图标路径
                             iconSize: [32, 32], // 图标大小（宽高）
                             iconAnchor: [16, 32], // 锚点（底部中点，对准点位坐标）
                             popupAnchor: [0, -32] // 弹窗相对于图标的偏移（避免遮挡图标）
                         });
 
-                        // 2. 创建Marker并传入图片图标
-                        return L.marker(latlng, { icon: customIcon })
+                        return L.marker(latlng)
                             .bindPopup(feature.properties.BM_Name);
+
+                        // 2. 创建Marker并传入图片图标
+                        // return L.marker(latlng, { icon: customIcon })
+                        //     .bindPopup(feature.properties.BM_Name);
                     },
                     // 2.为每个点位绑定点击事件
                     onEachFeature: function(feature, layer) {
@@ -109,7 +130,7 @@ $(document).ready(function () {
                         layer.on('click', function(e) {
                             const targetUrl = "feature/" + feature.properties.name + "/site/index.html";
                             updateSidePanel(feature.properties);
-                            // window.open(targetUrl, '_blank');
+                            $('.info-link').show();
                         });
 
 
@@ -198,13 +219,6 @@ $(document).ready(function () {
             onEachFeature: function (feature, layer) {
                 // 添加到图层组
                 appState.provinceLayers.addLayer(layer);
-                // 添加工具提示
-                layer.bindTooltip(provinceName, {
-                    permanent: false,
-                    direction: 'top',
-                    offset: [0, -5],
-                    className: 'province-tooltip'
-                });
             }
         });
         
@@ -246,10 +260,12 @@ $(document).ready(function () {
         }
     }
 
+    //更新侧边栏
     function updateSidePanel(properties) {
         const linksite="feature/"+properties.name+"/site/index.html";
         $('#name').text(properties.BM_Name);
-        $('#FeatureSiteLink').attr('href', linksite);
+        $('#SiteLink').attr('href', linksite);
+        $('#provinceName').text(properties.BM_Name);
     }
     
     // 10. 重置侧边栏

@@ -3,7 +3,7 @@ window.MapConfig = {
     // 1. 数据文件配置（相对路径）
     dataFiles: {
         geoJson: "data/YXF.geojson",        // GeoJSON地图数据
-        provinceInfo: "data/province-info.json"   // 省份信息数据
+        
     },
     
     // 2. 地图显示配置
@@ -54,10 +54,7 @@ window.MapConfig = {
     },
     
     // 5. 侧边栏默认文本
-    sidePanel: {
-        defaultTitle: "新城区",
-        defaultDescription: "点击查看详细信息"
-    },
+    
     
     // 6. 应用程序设置
     appSettings: {

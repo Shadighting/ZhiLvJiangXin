@@ -27,7 +27,7 @@ body {
 header {
     text-align: center;
     padding: 25px;
-    background: rgba(255, 255, 255, 0.95);
+    background: #EA6161;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -148,6 +148,22 @@ main {
 #provinceDetailText {
     color: #555;
     line-height: 1.7;
+}
+
+.info-link {
+    display: block;
+
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #3498db;
+    transition: transform 0.2s;
+
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+
+    text-decoration: none; 
 }
 
 
