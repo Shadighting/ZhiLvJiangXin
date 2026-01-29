@@ -86,11 +86,10 @@ $(document).ready(function () {
             // 创建省份图层组
             appState.provinceLayers = L.layerGroup().addTo(appState.map);
 
-            const imageUrl = 'feature/map.png'; // 本地图片路径
-                // 图片的地理边界：[[西南角经纬度], [东北角经纬度]]
+            const imageUrl = 'feature/map.png'; 
                 const imageBounds = [
-                [34.26596164508176,108.96468222141266], // 西南角：纬度39.78，经度116.20
-                [34.26686603988667,108.9661386609078]  // 东北角：纬度40.05，经度116.65
+                [34.26596164508176,108.96468222141266], // 西南角
+                [34.26686603988667,108.9661386609078]  // 东北角
                 ];
 
             const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
@@ -110,6 +109,7 @@ $(document).ready(function () {
                     // 1. 点位转图层
                     pointToLayer: function(feature, latlng) {
                         // 1. 创建图片图标
+
                         const customIcon = L.icon({
                             iconUrl: "feature/pin.ico" , // 自定义图标路径
                             iconSize: [32, 32], // 图标大小（宽高）
@@ -117,10 +117,27 @@ $(document).ready(function () {
                             popupAnchor: [0, -32] // 弹窗相对于图标的偏移（避免遮挡图标）
                         });
 
-                        return L.marker(latlng)
-                            .bindPopup(feature.properties.BM_Name);
+                        const src="feature/"+feature.properties.name+"/img/tooltip.jpg";
 
-                        // 2. 创建Marker并传入图片图标
+                        const tooltipContent = `
+                            <div class="tooltip-content">
+                                <img src="${src}" alt="${feature.properties.BM_Name}" class="tooltip-img">
+                                <p>${feature.properties.BM_Name}</p>
+                            </div>
+                        `;
+
+                        const marker = L.marker(latlng);
+
+                        marker.bindTooltip(tooltipContent, {
+                            permanent: false, 
+                            direction: 'top', 
+                            offset: [-25, -20], 
+                            className: 'PointTooltip' 
+                        });
+
+                        return marker;
+
+                        // 使用图标
                         // return L.marker(latlng, { icon: customIcon })
                         //     .bindPopup(feature.properties.BM_Name);
                     },
@@ -131,6 +148,7 @@ $(document).ready(function () {
                             const targetUrl = "feature/" + feature.properties.name + "/site/index.html";
                             updateSidePanel(feature.properties);
                             $('.info-link').show();
+                            $('.info-item').show();
                         });
 
 
@@ -230,6 +248,70 @@ $(document).ready(function () {
         
         console.log("✅ 地图渲染完成");
     }
+
+    function LoadMusic(){
+        console.log("Loading Music...");
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicImg = document.getElementById('musicImg');
+        // 播放状态标记（初始为暂停）
+        let isPlaying = false;
+        const play_img="feature/MusicPlay.png";
+        const pause_img="feature/MusicPause.png";
+
+        // 音乐播放方法
+        function playMusic() {
+            bgMusic.play()
+            .then(() => {
+                isPlaying = true;
+                musicImg.src = play_img;
+                musicImg.classList.add('rotate');
+                musicBtn.classList.add('playing');
+            })
+            .catch((error) => {
+                console.log('音乐播放暂未触发：', error.message);
+            });
+        }
+
+        // 监听页面首次点击/触摸事件，触发自动播放
+        function initAutoPlay() {
+            // 触发播放后，立即移除监听（只执行一次）
+            function handleFirstInteraction() {
+            playMusic();
+            document.removeEventListener('click', handleFirstInteraction);
+            document.removeEventListener('touchstart', handleFirstInteraction);
+            }
+            // 绑定PC端点击、移动端触摸事件
+            document.addEventListener('click', handleFirstInteraction);
+            document.addEventListener('touchstart', handleFirstInteraction);
+        }
+        // 页面加载后，初始化自动播放监听
+        initAutoPlay();
+
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (isPlaying) {
+            // 暂停音乐
+            bgMusic.pause();
+            isPlaying = false;
+            musicImg.src = pause_img;
+            musicImg.classList.remove('rotate');
+            musicBtn.classList.remove('playing');
+            } else {
+            // 播放音乐
+            playMusic();
+            }
+        });
+
+        // 音乐播放结束后重置状态（关闭loop时生效）
+        bgMusic.addEventListener('ended', function() {
+            isPlaying = false;
+            musicImg.classList.remove('rotate');
+            musicBtn.classList.remove('playing');
+            // 重新初始化自动播放监听（可选）
+            initAutoPlay();
+        });
+    }
     
     
     // 9. 初始化应用程序
@@ -247,8 +329,8 @@ $(document).ready(function () {
                 loadGeoJson()
             ]);
             
-            // 3. 设置初始状态
-            resetSidePanel();
+            // 3.加载音乐
+            LoadMusic();
             
             // 4. 完成初始化
             appState.initialized = true;
@@ -262,22 +344,10 @@ $(document).ready(function () {
 
     //更新侧边栏
     function updateSidePanel(properties) {
-        const linksite="feature/"+properties.name+"/site/index.html";
+        const SiteLink="feature/"+properties.name+"/site/index.html";
         $('#name').text(properties.BM_Name);
-        $('#SiteLink').attr('href', linksite);
+        $('#SiteLink').attr('href', SiteLink);
         $('#provinceName').text(properties.BM_Name);
-    }
-    
-    // 10. 重置侧边栏
-    function resetSidePanel() {
-        $('#provinceName').text(MapConfig.sidePanel.defaultTitle);
-        $('#provinceDescription').text(MapConfig.sidePanel.defaultDescription).show();
-        $('#provinceShortName').text('-');
-        $('#provinceCapital').text('-');
-        $('#provinceCode').text('-');
-        $('#provinceDetailText').text('点击地图上的点位查看详细信息');
-        $('#provinceDetails').show();
-        $('.side-panel').removeClass('has-selection');
     }
     
     initializeApp();

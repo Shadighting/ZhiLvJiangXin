@@ -90,10 +90,6 @@ main {
     color: #3498db;
 }
 
-/* 操作提示 */
-
-
-
 
 /* 信息网格 */
 .info-grid {
@@ -264,4 +260,87 @@ footer {
 .leaflet-tooltip-pane,
 .leaflet-popup-pane {
     outline: none !important;
+}
+
+/*点位提示框样式*/
+.PointTooltip {
+    background-color: #2c3e50 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    /* 内边距*/
+    padding: 4px 8px !important;
+    /* 圆角 */
+    border-radius: 4px !important;
+    /* 边框*/
+    border: none !important;
+    /* 阴影 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+    /* 文字对齐 */
+    text-align: center !important;
+    /* 取消默认的外边框 */
+    box-sizing: border-box !important;
+}
+
+.tooltip-img {
+    height: 80px;
+}
+
+/* 重置按钮默认样式 */
+.music-btn {
+  /* 固定定位（不随滚动移动，保留你之前的需求） */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  /* 圆形核心：宽高相等 + 圆角50% */
+  width: 60px;   /* 按钮直径，可自定义 */
+  height: 60px;
+  border-radius: 50%; /* 圆角50%实现圆形 */
+
+  /* 按钮样式美化 */
+  border: none;
+  background-color: #007bff;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+
+  /* 居中图片 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* 去掉默认内边距，避免圆形变形 */
+}
+
+/* 按钮hover效果 */
+.music-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 播放状态下的按钮背景色*/
+.music-btn.playing {
+  background-color: #007bff;
+}
+
+/* 按钮内的图片样式 */
+#musicImg {
+  width: 30px;  /* 图片大小 */
+  height: 30px;
+  object-fit: contain; /* 保持图片比例*/
+  transition: transform 0.2s; /*动画过渡*/
+}
+
+/* 定义旋转动画（核心） */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg); /* 初始角度 */
+  }
+  100% {
+    transform: rotate(360deg); /* 旋转一周 */
+  }
+}
+
+/* 旋转类：播放时添加，暂停时移除 */
+.rotate {
+  animation: rotate 3s linear infinite; /* 3秒旋转一周，匀速、无限循环 */
 }

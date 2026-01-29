@@ -66,15 +66,9 @@
                         <h3 id="provinceName" class="sidetitle">永兴坊</h3>
                         <p id="provinceDescription">点击任意点位开始探索</p>
                         
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <label><i class="name"></i> 名称：</label>
-                                <span id="name">-</span>
-                            </div>
-                            <div class="info-item">
-                                <label><i class="picture"></i> 图片：</label>
-                                <span id="picture">-</span>
-                            </div>
+                        <div class="info-item" style="display: none;">
+                            <label><i class="name"></i> 名称：</label>
+                            <span id="name">-</span>
                         </div>
 
                         <a id="NevigationLink" href="#" style="display: none;" class="info-link">导航</a>
@@ -91,6 +85,14 @@
             <p>© 离线地图系统 | 基于 <a href="https://leafletjs.com/" target="_blank">Leaflet</a></p>
         </footer>
     </div>
+
+    <!-- 音乐按钮 -->
+    <audio id="bgMusic" loop>
+        <source src="feature/bgmusic.mp3" type="audio/mpeg">
+    </audio>
+    <button id="musicBtn" class="music-btn">
+        <img id="musicImg" src="feature/MusicPause.png" alt="音乐图标">
+    </button>
     
     <!-- 离线jQuery -->
     <script src="lib/jquery/jquery.min.js"></script>
