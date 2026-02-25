@@ -1,0 +1,346 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 容器布局 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 95vh;
+}
+
+/* 头部样式 */
+header {
+    text-align: center;
+    padding: 25px;
+    background: #EA6161;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+h1 i {
+    color: #3498db;
+}
+
+
+
+/* 主要内容区域 */
+main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    flex: 1;
+}
+
+.map-container {
+    flex: 1;
+    min-width: 300px;
+    min-height: 500px;
+}
+
+/* 侧边栏样式 */
+.side-panel {
+    width: 350px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.side-panel h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.side-panel h2 i {
+    color: #3498db;
+}
+
+
+/* 信息网格 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.info-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #3498db;
+    transition: transform 0.2s;
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+}
+
+.info-item label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.info-item label i {
+    color: #3498db;
+    margin-right: 5px;
+    width: 16px;
+}
+
+.info-item span {
+    display: block;
+    color: #34495e;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* 省份详情 */
+#provinceDetails {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #2ecc71;
+}
+
+#provinceDetailText {
+    color: #555;
+    line-height: 1.7;
+}
+
+.info-link {
+    display: block;
+
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #3498db;
+    transition: transform 0.2s;
+
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+
+    text-decoration: none; 
+}
+
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* 页脚 */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    border-top: 1px solid #eee;
+}
+
+.footer-note {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    color: #95a5a6;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    main {
+        flex-direction: column;
+    }
+    
+    .side-panel {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        gap: 15px;
+    }
+    
+    header {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .map-container {
+        min-height: 400px;
+    }
+}
+
+/* Leaflet自定义样式 */
+.leaflet-container {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+.leaflet-popup-content {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.leaflet-tooltip {
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #3498db;
+}
+
+/* 移除Leaflet地图元素的点击焦点轮廓 */
+.leaflet-container:focus,
+.leaflet-container:active,
+.leaflet-container:focus-visible,
+.leaflet-container:focus-within {
+    outline: none !important;
+}
+
+/* 移除路径元素的焦点样式 */
+.leaflet-interactive:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* 移除所有Leaflet地图相关元素的焦点轮廓 */
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane {
+    outline: none !important;
+}
+
+/*点位提示框样式*/
+.PointTooltip {
+    background-color: #2c3e50 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    /* 内边距*/
+    padding: 4px 8px !important;
+    /* 圆角 */
+    border-radius: 4px !important;
+    /* 边框*/
+    border: none !important;
+    /* 阴影 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+    /* 文字对齐 */
+    text-align: center !important;
+    /* 取消默认的外边框 */
+    box-sizing: border-box !important;
+}
+
+.tooltip-img {
+    height: 80px;
+}
+
+/* 重置按钮默认样式 */
+.music-btn {
+  /* 固定定位（不随滚动移动，保留你之前的需求） */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  /* 圆形核心：宽高相等 + 圆角50% */
+  width: 60px;   /* 按钮直径，可自定义 */
+  height: 60px;
+  border-radius: 50%; /* 圆角50%实现圆形 */
+
+  /* 按钮样式美化 */
+  border: none;
+  background-color: #007bff;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+
+  /* 居中图片 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* 去掉默认内边距，避免圆形变形 */
+}
+
+/* 按钮hover效果 */
+.music-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 播放状态下的按钮背景色*/
+.music-btn.playing {
+  background-color: #007bff;
+}
+
+/* 按钮内的图片样式 */
+#musicImg {
+  width: 30px;  /* 图片大小 */
+  height: 30px;
+  object-fit: contain; /* 保持图片比例*/
+  transition: transform 0.2s; /*动画过渡*/
+}
+
+/* 定义旋转动画（核心） */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg); /* 初始角度 */
+  }
+  100% {
+    transform: rotate(360deg); /* 旋转一周 */
+  }
+}
+
+/* 旋转类：播放时添加，暂停时移除 */
+.rotate {
+  animation: rotate 3s linear infinite; /* 3秒旋转一周，匀速、无限循环 */
+}

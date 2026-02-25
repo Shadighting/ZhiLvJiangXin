@@ -46,7 +46,7 @@ window.MapConfig = {
         }
     },
     
-    // 5. 侧边栏默认文本
+    isMusicPlay : false,
     
     
     // 6. 应用程序设置

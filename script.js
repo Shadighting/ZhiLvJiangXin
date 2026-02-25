@@ -88,8 +88,8 @@ $(document).ready(function () {
 
             const imageUrl = 'feature/map.png'; 
                 const imageBounds = [
-                [34.26596164508176,108.96468222141266], // 西南角
-                [34.26686603988667,108.9661386609078]  // 东北角
+                [34.265803,108.964328], // 西南角
+                [34.267131,108.966269],  // 东北角
                 ];
 
             const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
@@ -108,16 +108,16 @@ $(document).ready(function () {
                 L.geoJSON(data, {
                     // 1. 点位转图层
                     pointToLayer: function(feature, latlng) {
-                        // 1. 创建图片图标
+                        // 每个点位使用各自文件夹下的图标
+                        const src = "feature/" + feature.properties.name + "/img/tooltip.png";
+                        console.log(src);
 
                         const customIcon = L.icon({
-                            iconUrl: "feature/pin.ico" , // 自定义图标路径
-                            iconSize: [32, 32], // 图标大小（宽高）
-                            iconAnchor: [16, 32], // 锚点（底部中点，对准点位坐标）
-                            popupAnchor: [0, -32] // 弹窗相对于图标的偏移（避免遮挡图标）
+                            iconUrl: src,
+                            iconSize: [64, 64],
+                            iconAnchor: [16, 32],
+                            popupAnchor: [0, -32]
                         });
-
-                        const src="feature/"+feature.properties.name+"/img/tooltip.jpg";
 
                         const tooltipContent = `
                             <div class="tooltip-content">
@@ -126,20 +126,16 @@ $(document).ready(function () {
                             </div>
                         `;
 
-                        const marker = L.marker(latlng);
+                        const marker = L.marker(latlng, { icon: customIcon });
 
                         marker.bindTooltip(tooltipContent, {
-                            permanent: false, 
-                            direction: 'top', 
-                            offset: [-25, -20], 
-                            className: 'PointTooltip' 
+                            permanent: false,
+                            direction: 'top',
+                            offset: [-25, -20],
+                            className: 'PointTooltip'
                         });
 
                         return marker;
-
-                        // 使用图标
-                        // return L.marker(latlng, { icon: customIcon })
-                        //     .bindPopup(feature.properties.BM_Name);
                     },
                     // 2.为每个点位绑定点击事件
                     onEachFeature: function(feature, layer) {
@@ -286,7 +282,7 @@ $(document).ready(function () {
             document.addEventListener('touchstart', handleFirstInteraction);
         }
         // 页面加载后，初始化自动播放监听
-        initAutoPlay();
+        if(MapConfig.isMusicPlay) initAutoPlay();
 
         musicBtn.addEventListener('click', function(e) {
             e.stopPropagation();
