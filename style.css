@@ -290,27 +290,15 @@ footer {
     outline: none !important;
 }
 
-/*点位提示框样式*/
-.PointTooltip {
-    background-color: #2c3e50 !important;
-    color: #ffffff !important;
-    font-size: 14px !important;
-    /* 内边距*/
-    padding: 4px 8px !important;
-    /* 圆角 */
-    border-radius: 4px !important;
-    /* 边框*/
-    border: none !important;
-    /* 阴影 */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
-    /* 文字对齐 */
-    text-align: center !important;
-    /* 取消默认的外边框 */
-    box-sizing: border-box !important;
+/* 地图点位图标：悬停放大效果（删除原有自定义浮窗样式） */
+.leaflet-marker-icon {
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.tooltip-img {
-    height: 80px;
+.leaflet-marker-icon:hover {
+    transform: scale(1.25);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+    z-index: 1000 !important;
 }
 
 /* 重置按钮默认样式 */

@@ -106,7 +106,7 @@ $(document).ready(function () {
             //创建点位图层
             $.getJSON("data/point.geojson", function(data) {
                 L.geoJSON(data, {
-                    // 1. 点位转图层
+                    // 1. 点位转图层（仅显示图标，悬停不再弹出浮窗）
                     pointToLayer: function(feature, latlng) {
                         // 每个点位使用各自文件夹下的图标
                         const src = "feature/" + feature.properties.name + "/img/tooltip.png";
@@ -114,30 +114,15 @@ $(document).ready(function () {
 
                         const customIcon = L.icon({
                             iconUrl: src,
-                            iconSize: [64, 64],
-                            iconAnchor: [16, 32],
+                            iconSize: [60, 80],
+                            iconAnchor: [16, 50],
                             popupAnchor: [0, -32]
                         });
 
-                        const tooltipContent = `
-                            <div class="tooltip-content">
-                                <img src="${src}" alt="${feature.properties.BM_Name}" class="tooltip-img">
-                                <p>${feature.properties.BM_Name}</p>
-                            </div>
-                        `;
-
                         const marker = L.marker(latlng, { icon: customIcon });
-
-                        marker.bindTooltip(tooltipContent, {
-                            permanent: false,
-                            direction: 'top',
-                            offset: [-25, -20],
-                            className: 'PointTooltip'
-                        });
-
                         return marker;
                     },
-                    // 2.为每个点位绑定点击事件
+                    // 2. 为每个点位绑定点击事件（悬停仅用于放大图标，由 CSS 控制）
                     onEachFeature: function(feature, layer) {
                         // ========== 自定义点击逻辑 ==========
                         layer.on('click', function(e) {
@@ -145,14 +130,6 @@ $(document).ready(function () {
                             updateSidePanel(feature.properties);
                             $('.info-link').show();
                             $('.info-item').show();
-                        });
-
-
-                        layer.on('mouseover', function() {
-                            this.openPopup(); // 打开当前点位的弹窗
-                        });
-                        layer.on('mouseout', function() {
-                            this.closePopup(); // 关闭当前点位的弹窗
                         });
                     }
                 }).addTo(appState.map);
