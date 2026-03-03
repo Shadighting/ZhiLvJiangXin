@@ -12,6 +12,13 @@ $(document).ready(function () {
         initialized: false,
         dataLoaded: false
     };
+
+    var feature_position ={
+        lazi: "https://ditu.amap.com/place/B0FFFVT6GP",
+        zenggao: "https://ditu.amap.com/place/B0FFG0SOIG",
+        xiqu: "https://ditu.amap.com/place/B0JRZ5C12Z",
+        
+    };
     
     // ==================== 工具函数 ====================
     function updateStatus(indicatorId, status, message) {
@@ -320,6 +327,7 @@ $(document).ready(function () {
         const SiteLink="feature/"+properties.name+"/site/index.html";
         $('#name').text(properties.BM_Name);
         $('#SiteLink').attr('href', SiteLink);
+        $('#NevigationLink').attr('href', feature_position[properties.name]);
         $('#provinceName').text(properties.BM_Name);
     }
     

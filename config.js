@@ -46,7 +46,7 @@ window.MapConfig = {
         }
     },
     
-    isMusicPlay : true,
+    isMusicPlay : false,
     
     
     // 6. 应用程序设置

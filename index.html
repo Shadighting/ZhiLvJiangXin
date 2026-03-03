@@ -55,6 +55,103 @@
             pointer-events: none;
         }
 
+        .user-area {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 10;
+        }
+
+        .user-avatar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .user-avatar__circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #11a2ff, #31d8c1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55);
+        }
+
+        .user-avatar__name {
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .login-button {
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: rgba(15, 23, 42, 0.85);
+            color: #e5e7eb;
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.65);
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background-color 0.18s ease,
+                filter 0.18s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.75);
+            filter: brightness(1.05);
+            background-color: rgba(15, 23, 42, 0.98);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            min-width: 120px;
+            padding: 8px;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.96);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .user-menu__item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #e5e7eb;
+            text-align: left;
+            padding: 6px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .user-menu__item:hover {
+            background: rgba(148, 163, 184, 0.25);
+        }
+
         .hero-content {
             position: relative;
             width: 100%;
@@ -234,6 +331,16 @@
 </head>
 <body>
     <section class="hero" aria-label="智旅匠新首页">
+        <div class="user-area" id="userArea">
+            <button class="login-button" id="loginButton" type="button">管理登录</button>
+            <div class="user-avatar" id="userAvatar" style="display:none;">
+                <div class="user-avatar__circle" id="userAvatarCircle">U</div>
+                <span class="user-avatar__name" id="userAvatarName"></span>
+            </div>
+            <div class="user-menu" id="userMenu" style="display:none;">
+                <button class="user-menu__item" id="logoutButton" type="button">退出登录</button>
+            </div>
+        </div>
         <div class="hero-content">
             <header class="title-group">
                 <p class="subtitle">SMART TOURISM · DIGITAL MAP</p>
@@ -258,6 +365,78 @@
             </footer>
         </div>
     </section>
+
+    <script>
+        (function () {
+            const loginButton = document.getElementById('loginButton');
+            const avatarEl = document.getElementById('userAvatar');
+            const circleEl = document.getElementById('userAvatarCircle');
+            const nameEl = document.getElementById('userAvatarName');
+            const userMenu = document.getElementById('userMenu');
+            const logoutButton = document.getElementById('logoutButton');
+            const userArea = document.getElementById('userArea');
+
+            // 跳转到登录页
+            if (loginButton) {
+                loginButton.addEventListener('click', function () {
+                    window.location.href = 'login.html';
+                });
+            }
+
+            try {
+                const stored = localStorage.getItem('zljx_user');
+
+                if (stored) {
+                    const info = JSON.parse(stored);
+                    const name = (info && info.username) ? String(info.username) : '用户';
+                    const initial = name.trim() ? name.trim().charAt(0).toUpperCase() : 'U';
+
+                    circleEl.textContent = initial;
+                    nameEl.textContent = name;
+
+                    if (avatarEl) avatarEl.style.display = 'flex';
+                    if (loginButton) loginButton.style.display = 'none';
+                } else {
+                    if (avatarEl) avatarEl.style.display = 'none';
+                    if (loginButton) loginButton.style.display = 'inline-flex';
+                }
+            } catch (e) {
+                console.error('读取登录信息失败', e);
+            }
+
+            // 头像点击展开/收起菜单
+            if (avatarEl && userMenu) {
+                avatarEl.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    if (userMenu.style.display === 'none' || userMenu.style.display === '') {
+                        userMenu.style.display = 'block';
+                    } else {
+                        userMenu.style.display = 'none';
+                    }
+                });
+            }
+
+            // 点击退出登录
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function () {
+                    localStorage.removeItem('zljx_user');
+                    if (userMenu) userMenu.style.display = 'none';
+                    if (avatarEl) avatarEl.style.display = 'none';
+                    if (loginButton) loginButton.style.display = 'inline-flex';
+                    // 退出后回到首页，确保界面刷新
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // 点击页面其他地方时收起菜单
+            document.addEventListener('click', function (event) {
+                if (!userArea || !userMenu) return;
+                if (!userArea.contains(event.target)) {
+                    userMenu.style.display = 'none';
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
 
