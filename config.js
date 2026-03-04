@@ -9,7 +9,7 @@ window.MapConfig = {
     // 2. 地图显示配置
     mapView: {
         center: [35.0, 105.0],  
-        minZoom: 17,
+        minZoom: 18,
         maxZoom: 20,
     },
 

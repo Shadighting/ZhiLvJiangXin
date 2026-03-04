@@ -161,7 +161,7 @@ main {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: #2563eb;
+    background: #AB2F2F;
     color: #ffffff;
     padding: 9px 14px;
     border-radius: 999px;
@@ -180,7 +180,7 @@ main {
 }
 
 .info-link:hover {
-    background: #1d4ed8;
+    background: #AB2F2F;
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
@@ -252,6 +252,7 @@ footer {
 /* Leaflet自定义样式 */
 .leaflet-container {
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background-color: #C3E0C2;
 }
 
 .leaflet-popup-content {
@@ -359,4 +360,45 @@ footer {
 /* 旋转类：播放时添加，暂停时移除 */
 .rotate {
   animation: rotate 3s linear infinite; /* 3秒旋转一周，匀速、无限循环 */
+}
+
+/* 地图页：侧边栏与折叠按钮样式 */
+body.map-page .side-panel {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translate(0, -50%);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+body.map-page.panel-collapsed .side-panel {
+  transform: translate(100%, -50%);
+}
+
+body.map-page .side-toggle-btn {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 64px;
+  border-radius: 8px 0 0 8px;
+  border: none;
+  background: #AB2F2F;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3);
+  z-index: 9999;
+}
+
+body.map-page .side-toggle-btn i {
+  transition: transform 0.2s ease;
+}
+
+body.map-page.panel-collapsed .side-toggle-btn i {
+  transform: rotate(180deg);
 }
