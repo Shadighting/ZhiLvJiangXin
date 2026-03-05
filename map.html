@@ -125,6 +125,32 @@
         </main>
     </div>
 
+    <!-- 点位详情弹窗（盲盒奖励样式） -->
+    <div id="pointModal" class="point-modal-overlay" aria-hidden="true">
+        <div class="point-modal-box">
+            <header class="point-modal-header">
+                <button type="button" class="point-modal-close" aria-label="关闭">×</button>
+                <span class="point-modal-header-icon"><i class="fas fa-gift"></i></span>
+                <h2 class="point-modal-title">恭喜获得</h2>
+                <p class="point-modal-subtitle">盲盒奖励</p>
+            </header>
+            <div class="point-modal-body">
+                <div class="point-modal-icon-wrap">
+                    <img class="point-modal-icon-img" id="pointModalImage" src="" alt="">
+                </div>
+                <p class="point-modal-discount-label">线下门店折扣</p>
+                <p class="point-modal-discount-text" id="pointModalText">陕西非遗戏曲博物馆讲解9折优惠</p>
+                <div class="point-modal-tip">
+                    <i class="fas fa-lightbulb point-modal-tip-icon"></i>
+                    <span>到店出示此页面即可享受折扣!</span>
+                </div>
+            </div>
+            <footer class="point-modal-footer">
+                <button type="button" class="point-modal-btn-claim">收下奖励</button>
+            </footer>
+        </div>
+    </div>
+
     <!-- 音乐按钮 -->
     <audio id="bgMusic" loop>
         <source src="feature/bgmusic.mp3" type="audio/mpeg">

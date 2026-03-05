@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>产品预约</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1 class="logo">产品预约</h1>
+      <p class="subtitle">填写信息，预约体验我们的精选产品</p>
+    </header>
+
+    <main class="main">
+      <section class="product-card">
+        <div class="product-image"></div>
+        <div class="product-info">
+          <h2 class="product-title">智旅匠新·文旅数字系统</h2>
+          <p class="product-desc">
+            一站式文旅数字化解决方案，支持景区导览、数据可视化、在线互动等功能，为游客提供沉浸式体验。
+          </p>
+          <ul class="product-tags">
+            <li>多终端支持</li>
+            <li>可视化大屏</li>
+            <li>定制化开发</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <h2 class="form-title">预约信息</h2>
+        <form id="reservationForm" novalidate>
+          <div class="form-row">
+            <label for="name">您的姓名<span class="required">*</span></label>
+            <input type="text" id="name" name="name" placeholder="请输入姓名" required />
+            <p class="error" data-error-for="name"></p>
+          </div>
+
+          <div class="form-row">
+            <label for="phone">联系电话<span class="required">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="请输入手机号码" required />
+            <p class="error" data-error-for="phone"></p>
+          </div>
+
+          <div class="form-row">
+            <label for="date">预约日期<span class="required">*</span></label>
+            <input type="date" id="date" name="date" required />
+            <p class="error" data-error-for="date"></p>
+          </div>
+
+          <div class="form-row">
+            <label for="quantity">预约人数</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="50" value="1" />
+            <p class="error" data-error-for="quantity"></p>
+          </div>
+
+          <div class="form-row">
+            <label for="remark">备注</label>
+            <textarea id="remark" name="remark" rows="3" placeholder="补充需求、公司信息等（选填）"></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">提交预约</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>智旅匠新 · 产品预约界面示例</p>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

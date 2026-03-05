@@ -10,7 +10,9 @@ $(document).ready(function () {
         provinceInfoDB: {},
         geoJsonFeatures: [],
         initialized: false,
-        dataLoaded: false
+        dataLoaded: false,
+        randomMarkers: [],
+        randomJitterTimer: null
     };
 
     var feature_position ={
@@ -50,6 +52,95 @@ $(document).ready(function () {
         );
     }
     
+    // ==================== 页面中央弹窗 ====================
+
+    function showPointModal(options) {
+        var imageUrl = options.imageUrl || '';
+        var text = options.text || '陕西非遗戏曲博物馆讲解9折优惠';
+        $('#pointModalImage').attr('src', imageUrl).attr('alt', '');
+        $('#pointModalText').text(text);
+        $('#pointModal').addClass('point-modal--show').attr('aria-hidden', 'false');
+    }
+
+    function closePointModal() {
+        $('#pointModal').removeClass('point-modal--show').attr('aria-hidden', 'true');
+    }
+
+    $(document).on('click', '.point-modal-close', closePointModal);
+    $(document).on('click', '.point-modal-btn-claim', closePointModal);
+    $(document).on('click', '#pointModal', function (e) {
+        if (e.target === this) closePointModal();
+    });
+
+    // ==================== 随机点位与抖动 ====================
+
+    // 在指定 bounds 内生成 count 个随机点位
+    function createRandomJitterPoints(bounds, count) {
+        if (!appState.map || !bounds) return;
+
+        // 清理旧的随机点位
+        if (appState.randomMarkers && appState.randomMarkers.length) {
+            appState.randomMarkers.forEach(function (m) {
+                appState.map.removeLayer(m);
+            });
+        }
+        appState.randomMarkers = [];
+
+        for (var i = 0; i < count; i++) {
+            var south = bounds[0][0];
+            var west = bounds[0][1];
+            var north = bounds[1][0];
+            var east = bounds[1][1];
+
+            var lat = south + Math.random() * (north - south);
+            var lng = west + Math.random() * (east - west);
+
+            var icon = L.icon({
+                iconUrl: 'lib/font-awesome/svgs/solid/gift.svg',
+                iconSize: [36, 36],
+                iconAnchor: [18, 18],
+                popupAnchor: [0, -18]
+            });
+
+            var marker = L.marker([lat, lng], { icon: icon });
+
+            (function (index) {
+                marker.on('click', function () {
+                    showPointModal({
+                        imageUrl: 'lib/font-awesome/svgs/solid/gift.svg',
+                        text: '陕西非遗戏曲博物馆讲解9折优惠'
+                    });
+                });
+            })(i);
+
+            marker.addTo(appState.map);
+            appState.randomMarkers.push(marker);
+        }
+    }
+
+    // 启动随机点位的周期性抖动效果
+    function startRandomPointJitter(intervalMs) {
+        if (!appState.randomMarkers || !appState.randomMarkers.length) return;
+
+        if (appState.randomJitterTimer) {
+            clearInterval(appState.randomJitterTimer);
+        }
+
+        var duration = 400; // 单次抖动持续时间（毫秒）
+        var interval = intervalMs || 2000;
+
+        appState.randomJitterTimer = setInterval(function () {
+            appState.randomMarkers.forEach(function (marker) {
+                var el = marker.getElement();
+                if (!el) return;
+                el.classList.add('random-point-jitter');
+                setTimeout(function () {
+                    el.classList.remove('random-point-jitter');
+                }, duration);
+            });
+        }, interval);
+    }
+
     // ==================== 核心功能 ====================
     
     // 1. 初始化地图
@@ -72,6 +163,7 @@ $(document).ready(function () {
                 attributionControl: false,
                 maxBounds: bound, 
                 maxBoundsViscosity: 0.8,
+                zoomControl: false,
             });
             
             // 添加自定义底图
@@ -94,10 +186,10 @@ $(document).ready(function () {
             appState.provinceLayers = L.layerGroup().addTo(appState.map);
 
             const imageUrl = 'feature/map.png'; 
-                const imageBounds = [
+            const imageBounds = [
                 [34.265803,108.964328], // 西南角
                 [34.267131,108.966269],  // 东北角
-                ];
+            ];
 
             const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
                 opacity: 1, // 图片透明度
@@ -108,6 +200,10 @@ $(document).ready(function () {
 
             // 3. 将图片图层添加到地图
             imageLayer.addTo(appState.map);
+
+            // 4. 在地图上随机生成 3 个点位，并启动周期性抖动
+            createRandomJitterPoints(imageBounds, 3);
+            startRandomPointJitter(2500);
 
 
             //创建点位图层
@@ -131,9 +227,7 @@ $(document).ready(function () {
                     },
                     // 2. 为每个点位绑定点击事件（悬停仅用于放大图标，由 CSS 控制）
                     onEachFeature: function(feature, layer) {
-                        // ========== 自定义点击逻辑 ==========
                         layer.on('click', function(e) {
-                            const targetUrl = "feature/" + feature.properties.name + "/site/index.html";
                             updateSidePanel(feature.properties);
                             $('.info-link').show();
                             $('.info-item').show();
