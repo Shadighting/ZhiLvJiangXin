@@ -98,6 +98,63 @@ main {
     gap: 14px;
 }
 
+.panel-content--tasks {
+  gap: 10px;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.task-status {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 2px solid #9ca3af;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: transparent;
+}
+
+.task-item.completed {
+  background: #ecfdf5;
+  border-color: #34d399;
+  color: #065f46;
+}
+
+.task-item.completed .task-status {
+  border-color: #34d399;
+  background: #34d399;
+  color: #ecfdf5;
+}
+
+.task-title {
+  flex: 1;
+}
+
+.task-progress {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
 #provinceInfo {
     display: flex;
     flex-direction: column;
@@ -389,20 +446,30 @@ footer {
 body.map-page .side-panel {
   position: fixed;
   top: 50%;
-  right: 20px;
   transform: translate(0, -50%);
   z-index: 1000;
   transition: transform 0.3s ease;
 }
 
-body.map-page.panel-collapsed .side-panel {
+body.map-page .side-panel--right {
+  right: 20px;
+}
+
+body.map-page .side-panel--left {
+  left: 20px;
+}
+
+body.map-page.panel-collapsed .side-panel--right {
   transform: translate(100%, -50%);
+}
+
+body.map-page.panel-left-collapsed .side-panel--left {
+  transform: translate(-120%, -50%);
 }
 
 body.map-page .side-toggle-btn {
   position: fixed;
   top: 50%;
-  right: 0;
   transform: translateY(-50%);
   width: 32px;
   height: 64px;
@@ -418,11 +485,25 @@ body.map-page .side-toggle-btn {
   z-index: 9999;
 }
 
+body.map-page .side-toggle-btn-right {
+  right: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+body.map-page .side-toggle-btn-left {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+}
+
 body.map-page .side-toggle-btn i {
   transition: transform 0.2s ease;
 }
 
-body.map-page.panel-collapsed .side-toggle-btn i {
+body.map-page.panel-collapsed .side-toggle-btn-right i {
+  transform: rotate(180deg);
+}
+
+body.map-page.panel-left-collapsed .side-toggle-btn-left i {
   transform: rotate(180deg);
 }
 
@@ -612,4 +693,168 @@ body.map-page.panel-collapsed .side-toggle-btn i {
 
 .point-modal-btn-claim:active {
   transform: translateY(0);
+}
+
+/* 角色点位旁对话框样式（微信聊天气泡风格） */
+.character-dialog-popup .leaflet-popup-content-wrapper,
+.character-dialog-popup .leaflet-popup-tip {
+  background: transparent;
+  box-shadow: none;
+}
+
+.character-dialog-popup .leaflet-popup-content {
+  margin: 0;
+}
+
+.character-dialog-popup .leaflet-popup-tip-container {
+  display: none; /* 用自绘气泡尖角，隐藏 Leaflet 默认尖角 */
+}
+
+.wechat-chat {
+  width: 300px;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 12px;
+  background: #f3f4f6; /* 微信聊天背景灰 */
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.25);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.wechat-log {
+  flex: 1;
+  overflow: hidden;
+  padding: 2px 2px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wechat-actions {
+  padding-top: 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  display: flex;
+  justify-content: center;
+}
+
+.wechat-action-btn {
+  width: 100%;
+  max-width: 260px;
+  background: #07c160;
+  color: #ffffff;
+  border: 1px solid rgba(5, 150, 105, 0.85);
+  box-shadow: 0 6px 14px rgba(5, 150, 105, 0.25);
+}
+
+.wechat-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #e5e7eb url("feature/character.png") center/cover no-repeat;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  flex-shrink: 0;
+}
+
+.wechat-msg {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.wechat-msg--left {
+  justify-content: flex-start;
+}
+
+.wechat-msg--right {
+  justify-content: flex-end;
+}
+
+.wechat-msg--right .wechat-bubble {
+  max-width: 240px;
+}
+
+.wechat-msg--new .wechat-bubble {
+  animation: chatFadeIn 0.32s ease-out;
+}
+
+@keyframes chatFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wechat-bubble {
+  position: relative;
+  max-width: 210px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.wechat-bubble--left {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+}
+
+.wechat-bubble--left::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  bottom: 10px;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-left: 1px solid rgba(203, 213, 225, 0.9);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.9);
+  transform: rotate(45deg);
+}
+
+.wechat-bubble--right {
+  background: #07c160; /* 微信绿 */
+  color: #ffffff;
+  border: 1px solid rgba(5, 150, 105, 0.85);
+}
+
+.wechat-bubble--right::before {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: 10px;
+  width: 10px;
+  height: 10px;
+  background: #07c160;
+  border-right: 1px solid rgba(5, 150, 105, 0.85);
+  border-top: 1px solid rgba(5, 150, 105, 0.85);
+  transform: rotate(45deg);
+}
+
+.wechat-text {
+  white-space: pre-wrap;
+}
+
+/* 底部回复按钮 */
+.character-dialog-btn {
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  font: inherit;
+  padding: 9px 12px;
+  border-radius: 12px;
+}
+
+.character-dialog-btn:hover {
+  filter: brightness(0.98);
+}
+
+.character-dialog-btn:active {
+  transform: translateY(1px);
 }

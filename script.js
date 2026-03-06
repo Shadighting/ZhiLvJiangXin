@@ -12,7 +12,18 @@ $(document).ready(function () {
         initialized: false,
         dataLoaded: false,
         randomMarkers: [],
-        randomJitterTimer: null
+        randomJitterTimer: null,
+        poiMarkers: [],
+        characterMarker: null,
+        characterPopup: null,
+        tasks: [],
+        markerScale: {
+            enabled: false,
+            baseZoom: null,
+            minScale: 0.6,
+            maxScale: 2.2
+        },
+        _markerScaleHandler: null
     };
 
     var feature_position ={
@@ -21,6 +32,15 @@ $(document).ready(function () {
         xiqu: "https://ditu.amap.com/place/B0JRZ5C12Z",
         
     };
+    
+    // 任务配置：与特色点位 name 一一对应
+    var TASK_CONFIG = [
+        { id: 'xiqu', title: '参观陕西戏曲非遗博物馆' },
+        { id: 'lazi', title: '品尝兴平辣子作坊' },
+        { id: 'zenggao', title: '打卡西安粘糕甑糕' },
+        { id: 'baihuo', title: '体验汉阴白火石汆汤' },
+        { id: 'xun', title: '了解长安埙社与埙文化' }
+    ];
     
     // ==================== 工具函数 ====================
     function updateStatus(indicatorId, status, message) {
@@ -51,7 +71,53 @@ $(document).ready(function () {
             '</div>'
         );
     }
-    
+
+    // ==================== 任务栏 ====================
+
+    function initTasks() {
+        appState.tasks = TASK_CONFIG.map(function (t) {
+            return {
+                id: t.id,
+                title: t.title,
+                completed: false
+            };
+        });
+        renderTasks();
+    }
+
+    function renderTasks() {
+        if (!appState.tasks || !appState.tasks.length) return;
+        var total = appState.tasks.length;
+        var done = appState.tasks.filter(function (t) { return t.completed; }).length;
+
+        var html = appState.tasks.map(function (t) {
+            var cls = 'task-item' + (t.completed ? ' completed' : '');
+            var icon = t.completed ? '✓' : '';
+            return '' +
+                '<li class="' + cls + '" data-task-id="' + t.id + '">' +
+                    '<span class="task-status">' + icon + '</span>' +
+                    '<span class="task-title">' + t.title + '</span>' +
+                '</li>';
+        }).join('');
+
+        $('#taskList').html(html);
+        $('#taskProgress').text('已完成 ' + done + ' / ' + total + ' 个任务');
+    }
+
+    function completeTaskForFeature(props) {
+        if (!props || !props.name || !appState.tasks) return;
+        var id = props.name;
+        var changed = false;
+        appState.tasks.forEach(function (t) {
+            if (t.id === id && !t.completed) {
+                t.completed = true;
+                changed = true;
+            }
+        });
+        if (changed) {
+            renderTasks();
+        }
+    }
     // ==================== 页面中央弹窗 ====================
 
     function showPointModal(options) {
@@ -71,6 +137,283 @@ $(document).ready(function () {
     $(document).on('click', '#pointModal', function (e) {
         if (e.target === this) closePointModal();
     });
+
+    // ==================== 角色点位对话 ====================
+
+    var characterDialogScript = {
+        npc: [
+            '迭发埙篪奏，相将金玉音。你想了解埙的历史吗',
+            '埙是中国最古老的闭口吹奏乐器之一，距今约7000年，从狩猎工具演变为八音之“土”，贯穿上古至当代，是中国音乐史的“活化石”。'
+        ],
+        user: ['好啊，请你介绍一下', '原来如此。']
+    };
+
+    var characterDialogState = {
+        open: false,
+        phase: 0, // 0: 等待用户回复1, 0.5: NPC 第二句动画中, 1: 等待用户回复2, 2: 完成(离开)
+        messages: [] // { side: 'left'|'right', text: string }
+    };
+
+    function escapeHtml(str) {
+        return String(str)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function renderCharacterDialog() {
+        if (!appState.map || !appState.characterMarker) return;
+
+        if (!appState.characterPopup) {
+            appState.characterPopup = L.popup({
+                closeButton: false,
+                autoPan: true,
+                className: 'character-dialog-popup',
+                offset: [0, -120]
+            });
+        }
+
+        var p = characterDialogState.phase;
+        var btnText;
+        if (p < 0.5) {
+            btnText = characterDialogScript.user[0];
+        } else if (p < 1.5) {
+            btnText = characterDialogScript.user[1];
+        } else {
+            btnText = '离开';
+        }
+
+        var itemsHtml = characterDialogState.messages.map(function (m, index) {
+            var isLast = index === characterDialogState.messages.length - 1;
+            var clsNew = isLast ? ' wechat-msg--new' : '';
+            if (m.side === 'left') {
+                return (
+                    '<div class="wechat-msg wechat-msg--left' + clsNew + '">' +
+                        '<div class="wechat-avatar" aria-hidden="true"></div>' +
+                        '<div class="wechat-bubble wechat-bubble--left"><div class="wechat-text">' +
+                            escapeHtml(m.text) +
+                        '</div></div>' +
+                    '</div>'
+                );
+            }
+
+            return (
+                '<div class="wechat-msg wechat-msg--right' + clsNew + '">' +
+                    '<div class="wechat-bubble wechat-bubble--right"><div class="wechat-text">' +
+                        escapeHtml(m.text) +
+                    '</div></div>' +
+                '</div>'
+            );
+        }).join('');
+
+        var html =
+            '<div class="character-dialog wechat-chat" data-phase="' + characterDialogState.phase + '">' +
+                '<div class="wechat-log" id="wechatLog">' + itemsHtml + '</div>' +
+                '<div class="wechat-actions">' +
+                    '<button type="button" class="character-dialog-btn wechat-action-btn">' + escapeHtml(btnText) + '</button>' +
+                '</div>' +
+            '</div>';
+
+        appState.characterPopup
+            .setLatLng(appState.characterMarker.getLatLng())
+            .setContent(html)
+            .openOn(appState.map);
+
+        // 渲染后滚动到底部
+        setTimeout(function () {
+            var el = document.getElementById('wechatLog');
+            if (el) el.scrollTop = el.scrollHeight;
+        }, 0);
+    }
+
+    function openCharacterDialog() {
+        if (!appState.map || !appState.characterMarker) return;
+        characterDialogState.open = true;
+        characterDialogState.phase = 0;
+        characterDialogState.messages = [
+            { side: 'left', text: characterDialogScript.npc[0] }
+        ];
+        renderCharacterDialog();
+    }
+
+    $(document).on('click', '.character-dialog-btn', function () {
+        if (!characterDialogState.open) return;
+
+        var p = characterDialogState.phase;
+
+        if (p < 0.5) {
+            characterDialogState.messages.push({ side: 'right', text: characterDialogScript.user[0] });
+            characterDialogState.phase = 0.5;
+            renderCharacterDialog();
+            setTimeout(function () {
+                if (!characterDialogState.open || characterDialogState.phase !== 0.5) return;
+                characterDialogState.messages.push({ side: 'left', text: characterDialogScript.npc[1] });
+                characterDialogState.phase = 1;
+                renderCharacterDialog();
+            }, 900);
+            return;
+        }
+
+        if (p < 1.5) {
+            characterDialogState.messages.push({ side: 'right', text: characterDialogScript.user[1] });
+            characterDialogState.phase = 2;
+            renderCharacterDialog();
+            return;
+        }
+
+        // phase >= 2
+        if (appState.map && appState.characterPopup) {
+            appState.map.closePopup(appState.characterPopup);
+        }
+        characterDialogState.open = false;
+    });
+
+    // ==================== 点位随缩放 ====================
+
+    function registerScalableMarker(marker) {
+        if (!marker || !marker.options || !marker.options.icon || !marker.options.icon.options) return;
+        if (marker.__baseIconOptions) return;
+
+        var o = marker.options.icon.options;
+        marker.__baseIconOptions = {
+            iconUrl: o.iconUrl,
+            iconRetinaUrl: o.iconRetinaUrl,
+            shadowUrl: o.shadowUrl,
+            shadowRetinaUrl: o.shadowRetinaUrl,
+            shadowSize: o.shadowSize ? [o.shadowSize[0], o.shadowSize[1]] : null,
+            shadowAnchor: o.shadowAnchor ? [o.shadowAnchor[0], o.shadowAnchor[1]] : null,
+            iconSize: o.iconSize ? [o.iconSize[0], o.iconSize[1]] : null,
+            iconAnchor: o.iconAnchor ? [o.iconAnchor[0], o.iconAnchor[1]] : null,
+            popupAnchor: o.popupAnchor ? [o.popupAnchor[0], o.popupAnchor[1]] : null,
+            className: o.className
+        };
+    }
+
+    function applyScaleToMarker(marker, scale) {
+        if (!marker) return;
+        registerScalableMarker(marker);
+        var b = marker.__baseIconOptions;
+        if (!b || !b.iconUrl || !b.iconSize) return;
+
+        var iconSize = [
+            Math.max(1, Math.round(b.iconSize[0] * scale)),
+            Math.max(1, Math.round(b.iconSize[1] * scale))
+        ];
+
+        var iconAnchor = b.iconAnchor
+            ? [Math.round(b.iconAnchor[0] * scale), Math.round(b.iconAnchor[1] * scale)]
+            : [Math.round(iconSize[0] / 2), Math.round(iconSize[1] / 2)];
+
+        var popupAnchor = b.popupAnchor
+            ? [Math.round(b.popupAnchor[0] * scale), Math.round(b.popupAnchor[1] * scale)]
+            : [0, -Math.round(iconSize[1] / 2)];
+
+        var nextIcon = L.icon({
+            iconUrl: b.iconUrl,
+            iconRetinaUrl: b.iconRetinaUrl,
+            shadowUrl: b.shadowUrl,
+            shadowRetinaUrl: b.shadowRetinaUrl,
+            shadowSize: b.shadowSize,
+            shadowAnchor: b.shadowAnchor,
+            className: b.className,
+            iconSize: iconSize,
+            iconAnchor: iconAnchor,
+            popupAnchor: popupAnchor
+        });
+
+        marker.setIcon(nextIcon);
+    }
+
+    function applyAllMarkerScale() {
+        if (!appState.map || !appState.markerScale.enabled) return;
+
+        var zoom = appState.map.getZoom();
+        var baseZoom = (appState.markerScale.baseZoom == null) ? zoom : appState.markerScale.baseZoom;
+        var delta = zoom - baseZoom;
+
+        // 指数缩放更顺滑：每级缩放大约变化 12%
+        var scale = Math.pow(1.12, delta);
+        scale = Math.max(appState.markerScale.minScale, Math.min(appState.markerScale.maxScale, scale));
+
+        if (appState.randomMarkers && appState.randomMarkers.length) {
+            appState.randomMarkers.forEach(function (m) {
+                applyScaleToMarker(m, scale);
+            });
+        }
+
+        if (appState.poiMarkers && appState.poiMarkers.length) {
+            appState.poiMarkers.forEach(function (m) {
+                applyScaleToMarker(m, scale);
+            });
+        }
+
+    }
+
+    // 对外函数：开启“所有点位随地图缩放”
+    function enableMarkersFollowZoom(options) {
+        if (!appState.map) return;
+        appState.markerScale.enabled = true;
+        appState.markerScale.baseZoom = (options && typeof options.baseZoom === 'number')
+            ? options.baseZoom
+            : MapConfig.mapView.zoom;
+        if (options && typeof options.minScale === 'number') appState.markerScale.minScale = options.minScale;
+        if (options && typeof options.maxScale === 'number') appState.markerScale.maxScale = options.maxScale;
+
+
+        if (appState._markerScaleHandler) {
+            appState.map.off('zoomend', appState._markerScaleHandler);
+        }
+        appState._markerScaleHandler = applyAllMarkerScale;
+        appState.map.on('zoomend', appState._markerScaleHandler);
+
+        // 初次应用一次，保证当前缩放下立即生效
+        applyAllMarkerScale();
+    }
+
+    // 点位放置
+
+    function placeMarker(position, options) {
+        if (!position) return null;
+
+        var opts = options || {};
+        var latlng = Array.isArray(position) ? L.latLng(position[0], position[1]) : position;
+
+        var icon = opts.icon;
+        if (!icon && opts.iconUrl) {
+            icon = L.icon({
+                iconUrl: opts.iconUrl,
+                iconSize: opts.iconSize,
+                iconAnchor: opts.iconAnchor,
+                popupAnchor: opts.popupAnchor
+            });
+        }
+
+        var marker = L.marker(latlng, icon ? { icon: icon } : undefined);
+
+        if (typeof opts.onClick === 'function') {
+            marker.on('click', opts.onClick);
+        }
+
+        if (opts.group === 'random') {
+            appState.randomMarkers.push(marker);
+        } else if (opts.group === 'poi') {
+            appState.poiMarkers.push(marker);
+        }
+
+        registerScalableMarker(marker);
+
+        if (opts.addToMap && appState.map) {
+            marker.addTo(appState.map);
+        }
+
+        if (opts.applyScale !== false) {
+            applyAllMarkerScale();
+        }
+
+        return marker;
+    }
 
     // ==================== 随机点位与抖动 ====================
 
@@ -95,28 +438,25 @@ $(document).ready(function () {
             var lat = south + Math.random() * (north - south);
             var lng = west + Math.random() * (east - west);
 
-            var icon = L.icon({
-                iconUrl: 'lib/font-awesome/svgs/solid/gift.svg',
-                iconSize: [36, 36],
-                iconAnchor: [18, 18],
-                popupAnchor: [0, -18]
-            });
-
-            var marker = L.marker([lat, lng], { icon: icon });
-
             (function (index) {
-                marker.on('click', function () {
-                    showPointModal({
-                        imageUrl: 'lib/font-awesome/svgs/solid/gift.svg',
-                        text: '陕西非遗戏曲博物馆讲解9折优惠'
-                    });
+                placeMarker([lat, lng], {
+                    group: 'random',
+                    addToMap: true,
+                    iconUrl: 'lib/font-awesome/svgs/solid/gift.svg',
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 18],
+                    popupAnchor: [0, -18],
+                    onClick: function () {
+                        showPointModal({
+                            imageUrl: 'lib/font-awesome/svgs/solid/gift.svg',
+                            text: '陕西非遗戏曲博物馆讲解9折优惠'
+                        });
+                    }
                 });
             })(i);
-
-            marker.addTo(appState.map);
-            appState.randomMarkers.push(marker);
         }
     }
+
 
     // 启动随机点位的周期性抖动效果
     function startRandomPointJitter(intervalMs) {
@@ -139,6 +479,7 @@ $(document).ready(function () {
                 }, duration);
             });
         }, interval);
+
     }
 
     // ==================== 核心功能 ====================
@@ -190,6 +531,8 @@ $(document).ready(function () {
                 [34.265803,108.964328], // 西南角
                 [34.267131,108.966269],  // 东北角
             ];
+            // const imageCenter = L.latLngBounds(imageBounds).getCenter();
+            const imageCenter = [34.26596164508176,108.96468222141266]
 
             const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
                 opacity: 1, // 图片透明度
@@ -204,6 +547,20 @@ $(document).ready(function () {
             // 4. 在地图上随机生成 3 个点位，并启动周期性抖动
             createRandomJitterPoints(imageBounds, 3);
             startRandomPointJitter(2500);
+            enableMarkersFollowZoom();
+
+            // 5. 在地图中央添加角色点位（使用底图中心）
+            appState.characterMarker = placeMarker(imageCenter, {
+                group: 'poi',
+                addToMap: true,
+                iconUrl: 'feature/character.png',
+                iconSize: [120, 160],
+                iconAnchor: [60, 130],
+                popupAnchor: [0, -120],
+                onClick: function () {
+                    openCharacterDialog();
+                }
+            });
 
 
             //创建点位图层
@@ -215,15 +572,15 @@ $(document).ready(function () {
                         const src = "feature/" + feature.properties.name + "/img/tooltip.png";
                         console.log(src);
 
-                        const customIcon = L.icon({
+                        return placeMarker(latlng, {
+                            group: 'poi',
+                            // 这里不能 addToMap，否则会与 geoJSON 图层重复管理
+                            addToMap: false,
                             iconUrl: src,
                             iconSize: [60, 80],
                             iconAnchor: [16, 50],
                             popupAnchor: [0, -32]
                         });
-
-                        const marker = L.marker(latlng, { icon: customIcon });
-                        return marker;
                     },
                     // 2. 为每个点位绑定点击事件（悬停仅用于放大图标，由 CSS 控制）
                     onEachFeature: function(feature, layer) {
@@ -231,6 +588,7 @@ $(document).ready(function () {
                             updateSidePanel(feature.properties);
                             $('.info-link').show();
                             $('.info-item').show();
+                            completeTaskForFeature(feature.properties);
                         });
                     }
                 }).addTo(appState.map);
@@ -405,8 +763,11 @@ $(document).ready(function () {
             
             // 3.加载音乐
             LoadMusic();
+
+            // 4. 初始化任务栏
+            initTasks();
             
-            // 4. 完成初始化
+            // 5. 完成初始化
             appState.initialized = true;
             console.log("✅ 应用程序初始化完成！");
             

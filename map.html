@@ -95,8 +95,18 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 左侧任务栏 -->
+            <div class="side-panel side-panel--left">
+                <h2><i class="fas fa-clipboard-list"></i> 任务清单</h2>
+                <div class="panel-content panel-content--tasks">
+                    <ul id="taskList" class="task-list"></ul>
+                    <div id="taskProgress" class="task-progress"></div>
+                </div>
+            </div>
             
-            <div class="side-panel">
+            <!-- 右侧信息栏 -->
+            <div class="side-panel side-panel--right">
                 <h2><i class="fas fa-info-circle"></i> 相关信息</h2>
                 
                 
@@ -171,19 +181,30 @@
     <!-- 主应用程序 -->
     <script src="script.js"></script>
 
-    <!-- 右侧信息栏折叠逻辑 -->
-    <button class="side-toggle-btn" id="sideToggleBtn" aria-label="切换信息栏">
+    <!-- 信息栏折叠逻辑 -->
+    <button class="side-toggle-btn side-toggle-btn-right" id="sideToggleBtn" aria-label="切换右侧信息栏">
         <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="side-toggle-btn side-toggle-btn-left" id="sideToggleLeftBtn" aria-label="切换任务栏">
+        <i class="fas fa-chevron-right"></i>
     </button>
     <script>
         (function () {
-            var btn = document.getElementById('sideToggleBtn');
+            var btnRight = document.getElementById('sideToggleBtn');
+            var btnLeft = document.getElementById('sideToggleLeftBtn');
             var body = document.body;
-            if (!btn) return;
+            
+            if (btnRight) {
+                btnRight.addEventListener('click', function () {
+                    body.classList.toggle('panel-collapsed');
+                });
+            }
 
-            btn.addEventListener('click', function () {
-                body.classList.toggle('panel-collapsed');
-            });
+            if (btnLeft) {
+                btnLeft.addEventListener('click', function () {
+                    body.classList.toggle('panel-left-collapsed');
+                });
+            }
         })();
     </script>
 </body>

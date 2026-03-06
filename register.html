@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智旅匠新 - 登录</title>
+    <title>智旅匠新 - 注册</title>
     <style>
         * {
             margin: 0;
@@ -72,6 +72,12 @@
             color: #f97373;
             margin-bottom: 6px;
         }
+        .success {
+            min-height: 18px;
+            font-size: 12px;
+            color: #4ade80;
+            margin-bottom: 6px;
+        }
         .button {
             width: 100%;
             margin-top: 6px;
@@ -129,9 +135,10 @@
 <body>
     <div class="card">
         <h1 class="title">智旅匠新</h1>
-        <p class="subtitle">管理入口 · 登录</p>
+        <p class="subtitle">管理入口 · 注册</p>
 
         <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
 
         <div class="field">
             <label class="label" for="username">用户名</label>
@@ -139,30 +146,57 @@
         </div>
         <div class="field">
             <label class="label" for="password">密码</label>
-            <input class="input" id="password" type="password" autocomplete="current-password" />
+            <input class="input" id="password" type="password" autocomplete="new-password" />
+        </div>
+        <div class="field">
+            <label class="label" for="password2">确认密码</label>
+            <input class="input" id="password2" type="password" autocomplete="new-password" />
         </div>
 
-        <button class="button" id="loginBtn">登录</button>
-        <button class="button secondary" id="registerBtn" type="button">注册新账号</button>
+        <button class="button" id="registerSubmitBtn">注册</button>
+        <button class="button secondary" id="backToLoginBtn" type="button">返回登录</button>
         <a href="index.html" class="back-link">← 返回首页</a>
     </div>
 
     <script>
         const apiBase = 'http://127.0.0.1:8000';
         const errorEl = document.getElementById('error');
-        const btn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
+        const successEl = document.getElementById('success');
+        const submitBtn = document.getElementById('registerSubmitBtn');
+        const backToLoginBtn = document.getElementById('backToLoginBtn');
 
-        btn.addEventListener('click', async () => {
+        function clearMessages() {
+            errorEl.textContent = '';
+            successEl.textContent = '';
+        }
+
+        submitBtn.addEventListener('click', async () => {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
+            const password2 = document.getElementById('password2').value;
 
-            errorEl.textContent = '';
-            btn.disabled = true;
-            btn.textContent = '登录中...';
+            clearMessages();
+
+            if (!username || !password || !password2) {
+                errorEl.textContent = '请完整填写所有字段。';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorEl.textContent = '密码长度至少为 6 位。';
+                return;
+            }
+
+            if (password !== password2) {
+                errorEl.textContent = '两次输入的密码不一致。';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '注册中...';
 
             try {
-                const res = await fetch(apiBase + '/accounts/api/login/', {
+                const res = await fetch(apiBase + '/accounts/api/register/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -173,23 +207,25 @@
                 const data = await res.json().catch(() => ({}));
 
                 if (!res.ok) {
-                    errorEl.textContent = data.detail || '登录失败，请检查用户名和密码。';
+                    errorEl.textContent = data.detail || '注册失败，请稍后重试。';
                 } else {
-                    // 前端记录登录信息，用于首页展示头像
                     const userInfo = { username: username || '用户' };
                     localStorage.setItem('zljx_user', JSON.stringify(userInfo));
-                    // 登录成功后返回首页
-                    window.location.href = 'index.html';
+                    successEl.textContent = '注册成功，正在跳转首页...';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 800);
                 }
             } catch (e) {
-                errorEl.textContent = '无法连接到登录服务，请确认后端已启动。';
+                errorEl.textContent = '无法连接到注册服务，请确认后端已启动。';
             } finally {
-                btn.disabled = false;
-                btn.textContent = '登录';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '注册';
             }
         });
-        registerBtn.addEventListener('click', () => {
-            window.location.href = 'register.html';
+
+        backToLoginBtn.addEventListener('click', () => {
+            window.location.href = 'login.html';
         });
     </script>
 </body>
