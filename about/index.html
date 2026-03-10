@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我们 - 智旅匠新</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      color: #e5e7eb;
+    }
+
+    body {
+      background-attachment: fixed;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 96px auto 40px;
+      padding: 0 20px 40px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .page-kicker {
+      font-size: 12px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      letter-spacing: 0.2em;
+      text-indent: 0.2em;
+      font-weight: 650;
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: #9ca3af;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .card {
+      border-radius: 18px;
+      padding: 22px 22px 20px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(129, 140, 248, 0.16), transparent 55%),
+                  rgba(15, 23, 42, 0.96);
+      box-shadow:
+        0 20px 45px rgba(15, 23, 42, 0.85),
+        0 0 0 1px rgba(148, 163, 184, 0.35);
+    }
+
+    .card + .card {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .card-title {
+      font-size: 15px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #e5e7eb;
+    }
+
+    .card-divider {
+      width: 64px;
+      height: 1px;
+      margin-bottom: 14px;
+      background: linear-gradient(to right, #38bdf8, #22c55e);
+    }
+
+    .card-text {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #cbd5f5;
+    }
+
+    .highlights {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .highlight-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e5e7eb;
+    }
+
+    .highlight-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .social-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .social-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+    }
+
+    .social-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .social-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .social-desc {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #e5e7eb;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 60%),
+                  rgba(15, 23, 42, 0.98);
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        background-color 0.16s ease;
+    }
+
+    .social-link::after {
+      content: "↗";
+      margin-left: 4px;
+      font-size: 11px;
+    }
+
+    .social-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.8);
+      background-color: rgba(30, 64, 175, 0.9);
+    }
+
+    .social-note {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .footer {
+      margin-top: 22px;
+      font-size: 11px;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        margin-top: 84px;
+        padding-inline: 16px;
+      }
+
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-navbar"></div>
+
+  <main aria-label="关于智旅匠新页面">
+    <header class="page-header">
+      <p class="page-kicker">ABOUT · ZHILV JIANGXIN</p>
+      <h1 class="page-title">关于智旅匠新</h1>
+      <p class="page-subtitle">了解项目愿景与背后的团队故事</p>
+    </header>
+
+    <section class="grid" aria-label="项目介绍与社交媒体">
+      <article class="card" aria-label="项目介绍">
+        <h2 class="card-title">项目介绍 / PROJECT</h2>
+        <div class="card-divider"></div>
+        <p class="card-text">
+          智旅匠新专注于将地理信息技术与文化旅游内容深度融合，
+          通过离线数字地图重构景区的空间叙事方式。我们不仅展示点位与路线，
+          更希望将非遗、在地生活和城市记忆，以可漫游、可互动的方式呈现给每一位游客。
+        </p>
+        <p class="card-text" style="margin-top: 10px;">
+          当前版本聚焦于核心场景体验，包括地图漫游、特色点位任务、角色对话以及线下导览联动。
+          后续我们将逐步接入更多目的地与主题玩法，欢迎您通过下方社交平台关注最新进展。
+        </p>
+
+        <div class="highlights" aria-label="项目亮点">
+          <div class="highlight-item">
+            <div class="highlight-label">定位</div>
+            <div>以数字地图为核心入口，连接目的地在地文化与沉浸式游览体验。</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-label">能力</div>
+            <div>支持离线地图、本地资源加载与多终端适配，为线下展陈与活动提供稳定支撑。</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-label">愿景</div>
+            <div>让每一次旅行都成为一次关于“地方故事”的深度发现。</div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="card" aria-label="官方社交媒体账号">
+        <h2 class="card-title">官方账号 / SOCIAL</h2>
+        <div class="card-divider"></div>
+        <ul class="social-list">
+          <li class="social-item">
+            <div class="social-meta">
+              <span class="social-name">抖音 · 短视频号</span>
+              <span class="social-desc">观看项目演示与幕后花絮</span>
+            </div>
+            <a class="social-link" href="https://www.douyin.com" target="_blank" rel="noopener noreferrer">前往抖音</a>
+          </li>
+          <li class="social-item">
+            <div class="social-meta">
+              <span class="social-name">小红书 · 图文号</span>
+              <span class="social-desc">查看游玩攻略与图文笔记</span>
+            </div>
+            <a class="social-link" href="https://www.xiaohongshu.com" target="_blank" rel="noopener noreferrer">前往小红书</a>
+          </li>
+          <li class="social-item">
+            <div class="social-meta">
+              <span class="social-name">微博 · 官方账号</span>
+              <span class="social-desc">关注项目动态与活动发布</span>
+            </div>
+            <a class="social-link" href="https://weibo.com" target="_blank" rel="noopener noreferrer">前往微博</a>
+          </li>
+        </ul>
+        <p class="social-note">如需绑定具体的账号主页链接，可在此处替换为您的专属 URL。</p>
+
+        <div class="footer">
+          © 智旅匠新 · 数字地图项目
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../components/navbar/navbar.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=about/index.html">
+  <title>关于我们 - 智旅匠新</title>
+  <script>
+    // 作为兜底处理，确保在不支持 meta 刷新的环境中也能跳转
+    (function () {
+      try {
+        window.location.replace('about/index.html');
+      } catch (e) {
+        window.location.href = 'about/index.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>正在跳转到关于页，如果浏览器没有自动跳转，请
+    <a href="about/index.html">点击这里</a>。</p>
+</body>
+</html>
+

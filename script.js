@@ -330,12 +330,11 @@ $(document).ready(function () {
         if (!appState.map || !appState.markerScale.enabled) return;
 
         var zoom = appState.map.getZoom();
-        var baseZoom = (appState.markerScale.baseZoom == null) ? zoom : appState.markerScale.baseZoom;
-        var delta = zoom - baseZoom;
+        var baseZoom = 20;
+        var delta = (zoom - baseZoom);
 
         // 指数缩放更顺滑：每级缩放大约变化 12%
-        var scale = Math.pow(1.12, delta);
-        scale = Math.max(appState.markerScale.minScale, Math.min(appState.markerScale.maxScale, scale));
+        var scale = Math.pow(2, delta);
 
         if (appState.randomMarkers && appState.randomMarkers.length) {
             appState.randomMarkers.forEach(function (m) {
@@ -532,7 +531,7 @@ $(document).ready(function () {
                 [34.267131,108.966269],  // 东北角
             ];
             // const imageCenter = L.latLngBounds(imageBounds).getCenter();
-            const imageCenter = [34.26596164508176,108.96468222141266]
+            const imageCenter = [34.26663,108.9658]
 
             const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
                 opacity: 1, // 图片透明度
