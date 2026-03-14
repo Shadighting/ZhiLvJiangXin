@@ -16,10 +16,22 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
       background: radial-gradient(circle at top, #0f172a, #020617);
       color: #e5e7eb;
+      
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background-image: url("../feature/about_bg.jpg");
+      background-size: cover;
+     
+      color: #b4543c;
+      
     }
 
     body {
       background-attachment: fixed;
+      
     }
 
     main {
@@ -215,7 +227,7 @@
 </head>
 <body>
   <div id="site-navbar"></div>
-
+  <script src="../components/navbar/navbar.js"></script>
   <main aria-label="关于智旅匠新页面">
     <header class="page-header">
       <p class="page-kicker">ABOUT · ZHILV JIANGXIN</p>
@@ -279,10 +291,9 @@
             <a class="social-link" href="https://weibo.com" target="_blank" rel="noopener noreferrer">前往微博</a>
           </li>
         </ul>
-        <p class="social-note">如需绑定具体的账号主页链接，可在此处替换为您的专属 URL。</p>
 
         <div class="footer">
-          © 智旅匠新 · 数字地图项目
+          © 智旅匠新 · 数字地图
         </div>
       </aside>
     </section>

@@ -489,8 +489,8 @@ $(document).ready(function () {
         updateStatus('mapStatus', 'loading', '初始化地图');
         
         var bound = L.latLngBounds(
-            [34.26596164508176,108.96468222141266],  // 西南角：纬度(lat)、经度(lng)
-            [34.26686603988667,108.9661386609078]   // 东北角：纬度(lat)、经度(lng)
+            [34.26596164,108.964682],  // 西南角：纬度(lat)、经度(lng)
+            [34.26686604,108.966139]   // 东北角：纬度(lat)、经度(lng)
         );
 
         
@@ -530,8 +530,8 @@ $(document).ready(function () {
                 [34.265803,108.964328], // 西南角
                 [34.267131,108.966269],  // 东北角
             ];
-            // const imageCenter = L.latLngBounds(imageBounds).getCenter();
-            const imageCenter = [34.26663,108.9658]
+            
+            const imageCenter = [34.26615,108.96478]
 
             const imageLayer = L.imageOverlay(imageUrl, imageBounds, {
                 opacity: 1, // 图片透明度
@@ -548,7 +548,7 @@ $(document).ready(function () {
             startRandomPointJitter(2500);
             enableMarkersFollowZoom();
 
-            // 5. 在地图中央添加角色点位（使用底图中心）
+            // 5. 添加角色点位
             appState.characterMarker = placeMarker(imageCenter, {
                 group: 'poi',
                 addToMap: true,

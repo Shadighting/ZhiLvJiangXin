@@ -30,6 +30,11 @@ body {
   letter-spacing: 0.08em;
 }
 
+.logo-icon{
+  height: 64px;
+  
+}
+
 .subtitle {
   margin-top: 8px;
   font-size: 0.95rem;

@@ -20,6 +20,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  const img=document.getElementById("logo-icon");  
+  img.addEventListener('click', function() {
+      window.location.href= "../index.html";
+  });
+
   function clearErrors() {
     document
       .querySelectorAll(".error[data-error-for]")
