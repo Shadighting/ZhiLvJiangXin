@@ -20,7 +20,8 @@
    min-height: 100vh;
    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
      sans-serif;
-   background: radial-gradient(circle at top, #ec7474 0, #bc5151 55%);
+   background-image: url("../../feature/reservation_bg.jpg");
+   background-size: cover;
    color: var(--text-main);
    display: flex;
    align-items: center;
@@ -271,5 +272,5 @@
      flex: 0 0 auto;
    }
  }
-
  
+

@@ -312,7 +312,7 @@ footer {
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
     background-color: #C3E0C2;
 }
-
+site-navbar
 .leaflet-popup-content {
     font-size: 14px;
     line-height: 1.5;
@@ -320,7 +320,6 @@ footer {
 
 .leaflet-tooltip {
     font-weight: 600;
-    background: rgba(255, 255, 255, 0.95);
     border: 2px solid #3498db;
 }
 

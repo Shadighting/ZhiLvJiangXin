@@ -3,7 +3,7 @@
     var placeholder = document.getElementById('site-navbar');
     if (!placeholder) return;
 
-    fetch('components/navbar/navbar.html', { cache: 'no-store' })
+    fetch('/components/navbar/navbar.html', { cache: 'no-store' })
       .then(function (response) {
         if (!response.ok) throw new Error('导航加载失败');
         return response.text();

@@ -15,6 +15,8 @@ $(document).ready(function () {
         randomJitterTimer: null,
         poiMarkers: [],
         characterMarker: null,
+        characterMarker2: null,
+        currentCharacterMarker: null,
         characterPopup: null,
         tasks: [],
         markerScale: {
@@ -148,10 +150,21 @@ $(document).ready(function () {
         user: ['好啊，请你介绍一下', '原来如此。']
     };
 
+    var characterDialogScript2 = {
+        npc: [
+            '那家的辣子真的太香了，你一定要去尝尝！',
+            '那你算是来对了！兴平辣子作坊的辣子绝对能让你回味无穷'
+        ],
+        user: ['真有这么好吃？我也要去尝尝', '原来如此。']
+    };
+
+
     var characterDialogState = {
         open: false,
         phase: 0, // 0: 等待用户回复1, 0.5: NPC 第二句动画中, 1: 等待用户回复2, 2: 完成(离开)
-        messages: [] // { side: 'left'|'right', text: string }
+        messages: [], // { side: 'left'|'right', text: string }
+        currentScript: null, // 当前使用的对话脚本
+        avatarUrl: null // 当前对话角色的头像URL
     };
 
     function escapeHtml(str) {
@@ -164,23 +177,25 @@ $(document).ready(function () {
     }
 
     function renderCharacterDialog() {
-        if (!appState.map || !appState.characterMarker) return;
+        var cur = appState.currentCharacterMarker || appState.characterMarker;
+        if (!appState.map || !cur) return;
 
         if (!appState.characterPopup) {
             appState.characterPopup = L.popup({
                 closeButton: false,
                 autoPan: true,
                 className: 'character-dialog-popup',
-                offset: [0, -120]
+                offset: [0, 0]
             });
         }
 
+        var script = characterDialogState.currentScript || characterDialogScript;
         var p = characterDialogState.phase;
         var btnText;
         if (p < 0.5) {
-            btnText = characterDialogScript.user[0];
+            btnText = script.user[0];
         } else if (p < 1.5) {
-            btnText = characterDialogScript.user[1];
+            btnText = script.user[1];
         } else {
             btnText = '离开';
         }
@@ -189,9 +204,12 @@ $(document).ready(function () {
             var isLast = index === characterDialogState.messages.length - 1;
             var clsNew = isLast ? ' wechat-msg--new' : '';
             if (m.side === 'left') {
+                var avatarImg = characterDialogState.avatarUrl 
+                    ? '<img src="' + escapeHtml(characterDialogState.avatarUrl) + '" alt="角色头像" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">'
+                    : '';
                 return (
                     '<div class="wechat-msg wechat-msg--left' + clsNew + '">' +
-                        '<div class="wechat-avatar" aria-hidden="true"></div>' +
+                        '<div class="wechat-avatar" aria-hidden="true">' + avatarImg + '</div>' +
                         '<div class="wechat-bubble wechat-bubble--left"><div class="wechat-text">' +
                             escapeHtml(m.text) +
                         '</div></div>' +
@@ -217,7 +235,7 @@ $(document).ready(function () {
             '</div>';
 
         appState.characterPopup
-            .setLatLng(appState.characterMarker.getLatLng())
+            .setLatLng(cur.getLatLng())
             .setContent(html)
             .openOn(appState.map);
 
@@ -228,12 +246,24 @@ $(document).ready(function () {
         }, 0);
     }
 
-    function openCharacterDialog() {
-        if (!appState.map || !appState.characterMarker) return;
+    function openCharacterDialog(marker) {
+        var m = marker || appState.characterMarker;
+        if (!appState.map || !m) return;
+        appState.currentCharacterMarker = m;
+        
+        // 根据点击的人物选择对应的对话脚本和头像
+        if (m === appState.characterMarker2) {
+            characterDialogState.currentScript = characterDialogScript2;
+            characterDialogState.avatarUrl = 'feature/character2.png';
+        } else {
+            characterDialogState.currentScript = characterDialogScript;
+            characterDialogState.avatarUrl = 'feature/character1.png';
+        }
+        
         characterDialogState.open = true;
         characterDialogState.phase = 0;
         characterDialogState.messages = [
-            { side: 'left', text: characterDialogScript.npc[0] }
+            { side: 'left', text: characterDialogState.currentScript.npc[0] }
         ];
         renderCharacterDialog();
     }
@@ -241,15 +271,16 @@ $(document).ready(function () {
     $(document).on('click', '.character-dialog-btn', function () {
         if (!characterDialogState.open) return;
 
+        var script = characterDialogState.currentScript || characterDialogScript;
         var p = characterDialogState.phase;
 
         if (p < 0.5) {
-            characterDialogState.messages.push({ side: 'right', text: characterDialogScript.user[0] });
+            characterDialogState.messages.push({ side: 'right', text: script.user[0] });
             characterDialogState.phase = 0.5;
             renderCharacterDialog();
             setTimeout(function () {
                 if (!characterDialogState.open || characterDialogState.phase !== 0.5) return;
-                characterDialogState.messages.push({ side: 'left', text: characterDialogScript.npc[1] });
+                characterDialogState.messages.push({ side: 'left', text: script.npc[1] });
                 characterDialogState.phase = 1;
                 renderCharacterDialog();
             }, 900);
@@ -257,7 +288,7 @@ $(document).ready(function () {
         }
 
         if (p < 1.5) {
-            characterDialogState.messages.push({ side: 'right', text: characterDialogScript.user[1] });
+            characterDialogState.messages.push({ side: 'right', text: script.user[1] });
             characterDialogState.phase = 2;
             renderCharacterDialog();
             return;
@@ -268,6 +299,7 @@ $(document).ready(function () {
             appState.map.closePopup(appState.characterPopup);
         }
         characterDialogState.open = false;
+        appState.currentCharacterMarker = null;
     });
 
     // ==================== 点位随缩放 ====================
@@ -548,16 +580,30 @@ $(document).ready(function () {
             startRandomPointJitter(2500);
             enableMarkersFollowZoom();
 
-            // 5. 添加角色点位
+            // 5. 添加角色点位（人物一）
             appState.characterMarker = placeMarker(imageCenter, {
                 group: 'poi',
                 addToMap: true,
-                iconUrl: 'feature/character.png',
+                iconUrl: 'feature/character1.png',
                 iconSize: [120, 160],
                 iconAnchor: [60, 130],
                 popupAnchor: [0, -120],
                 onClick: function () {
-                    openCharacterDialog();
+                    openCharacterDialog(appState.characterMarker);
+                }
+            });
+
+            // 6. 添加角色点位（人物二，逻辑与人物一相同）
+            var imageCenter2 = [34.26665, 108.96585];
+            appState.characterMarker2 = placeMarker(imageCenter2, {
+                group: 'poi',
+                addToMap: true,
+                iconUrl: 'feature/character2.png',
+                iconSize: [120, 160],
+                iconAnchor: [60, 130],
+                popupAnchor: [0, -120],
+                onClick: function () {
+                    openCharacterDialog(appState.characterMarker2);
                 }
             });
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智旅匠新-数字地图</title>
+    <link rel="icon" href="feature/icon/LOGO.png" type="image/png">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="lib/leaflet/leaflet.css">
@@ -51,7 +52,7 @@
         #mapContainer {
             width: 100%;
             height: 100%;
-            background: #f0f0f0;
+            background: #FCF9F2; /* 牙白：地图画布背景 */
             border-radius: 0;
             overflow: hidden;
             position: relative;
@@ -68,11 +69,11 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            color: #666;
+            color: #555555; /* 重墨 */
         }
 
         .leaflet-container {
-            background-color: #C3E0C2; /* 淡蓝色底色，可替换为任意颜色 */
+            background-color: #FCF9F2; /* 牙白：地图底图 */
         }
 
         @media (max-width: 1200px) {
