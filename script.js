@@ -32,7 +32,8 @@ $(document).ready(function () {
         lazi: "https://ditu.amap.com/place/B0FFFVT6GP",
         zenggao: "https://ditu.amap.com/place/B0FFG0SOIG",
         xiqu: "https://ditu.amap.com/place/B0JRZ5C12Z",
-        
+        baihuo: "https://ditu.amap.com/place/B0FFG0SOIG",  // 暂时使用相同链接，可根据实际调整
+        xun: "https://ditu.amap.com/place/B0JRZ5C12Z"     // 暂时使用相同链接，可根据实际调整
     };
     
     // 任务配置：与特色点位 name 一一对应
@@ -43,6 +44,15 @@ $(document).ready(function () {
         { id: 'baihuo', title: '体验汉阴白火石汆汤' },
         { id: 'xun', title: '了解长安埙社与埙文化' }
     ];
+    
+    // 点位描述配置
+    var POINT_DESCRIPTIONS = {
+        xiqu: '皮影戏是以优质牛皮经多道工序制成的人物造型古朴夸张、线条精细的艺术形式，表演时配合秦腔唱腔与打击乐，光影投射于素幕上演故事，是集美术、音乐、戏剧于一体的“活化石”艺术。',
+        lazi: '油泼辣子是陕西关中风味的核心调味料，以秦椒为主，传统做法是将辣椒面加香料浇入热油中激出复合香气，油润红亮、辣而不燥，是陕西面食的灵魂调味。',
+        zenggao: '西安传统甑糕用特制铁甑分层铺码糯米和红枣，经数小时焖蒸而成，糯米软糯、红枣蜜甜，米枣交融入口即化，是冬春季节西安街头的经典风味小吃。',
+        baihuo: '白火石汆汤是古老石烹技艺的活化石，使用汉阴白河的白火石烧红投入肉泥高汤中，瞬间高温使汤沸肉熟，成品汤清味鲜、肉质滑嫩，保留食材本味与营养。',
+        xun: '埙是中国最古老的吹奏乐器之一，以陶土烧制而成，音色古朴低沉醇厚，有沧桑感，适合表现悠远肃穆的意境，常用于古乐和琴埙合奏。'
+    };
     
     // ==================== 工具函数 ====================
     function updateStatus(indicatorId, status, message) {
@@ -180,13 +190,22 @@ $(document).ready(function () {
         var cur = appState.currentCharacterMarker || appState.characterMarker;
         if (!appState.map || !cur) return;
 
+        // 根据人物设置不同的popup偏移
+        var popupOffset = [0, 0]; // 默认偏移
+        if (cur === appState.characterMarker2) {
+            popupOffset = [-80, 160]; // 第二个人物：左下角偏移
+        }
+
         if (!appState.characterPopup) {
             appState.characterPopup = L.popup({
                 closeButton: false,
                 autoPan: true,
                 className: 'character-dialog-popup',
-                offset: [0, 0]
+                offset: popupOffset
             });
+        } else {
+            // 如果popup已存在，更新offset
+            appState.characterPopup.options.offset = popupOffset;
         }
 
         var script = characterDialogState.currentScript || characterDialogScript;
@@ -473,13 +492,13 @@ $(document).ready(function () {
                 placeMarker([lat, lng], {
                     group: 'random',
                     addToMap: true,
-                    iconUrl: 'lib/font-awesome/svgs/solid/gift.svg',
+                    iconUrl: 'feature/gift.png',
                     iconSize: [36, 36],
                     iconAnchor: [18, 18],
                     popupAnchor: [0, -18],
                     onClick: function () {
                         showPointModal({
-                            imageUrl: 'lib/font-awesome/svgs/solid/gift.svg',
+                            imageUrl: 'feature/gift.png',
                             text: '陕西非遗戏曲博物馆讲解9折优惠'
                         });
                     }
@@ -733,8 +752,8 @@ $(document).ready(function () {
         const musicImg = document.getElementById('musicImg');
         // 播放状态标记（初始为暂停）
         let isPlaying = false;
-        const play_img="feature/MusicPlay.png";
-        const pause_img="feature/MusicPause.png";
+        const play_img="feature/lantern2.png";
+        const pause_img="feature/lantern1.png";
 
         // 音乐播放方法
         function playMusic() {
@@ -826,9 +845,12 @@ $(document).ready(function () {
     function updateSidePanel(properties) {
         const SiteLink="feature/"+properties.name+"/site/index.html";
         $('#name').text(properties.BM_Name);
+        $('#description').text(POINT_DESCRIPTIONS[properties.name] || '点击任意点位开始探索');
         $('#SiteLink').attr('href', SiteLink);
         $('#NevigationLink').attr('href', feature_position[properties.name]);
         $('#provinceName').text(properties.BM_Name);
+        $('#provinceDescription').text(''); // 清空原有描述
+        $('.info-item').show(); // 显示信息项
     }
     
     initializeApp();

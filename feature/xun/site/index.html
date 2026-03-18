@@ -8,10 +8,14 @@
    <link rel="stylesheet" href="styles.css" />
  </head>
  <body>
+
+
+   <div id="site-navbar"></div>
+
    <div class="detail-page">
      <header class="detail-header">
-       <h1 class="detail-title">景点详情展示</h1>
-       <p class="detail-subtitle">精美图片 + 图文介绍展示页</p>
+       <h1 class="detail-title">详情展示</h1>
+       <p class="detail-subtitle">图文介绍展示页</p>
      </header>
  
      <main class="detail-main">
@@ -19,41 +23,35 @@
          <div class="image-frame">
            <img
              id="mainImage"
-             src="https://images.pexels.com/photos/210307/pexels-photo-210307.jpeg?auto=compress&cs=tinysrgb&w=1200"
+             src="../img/picture.jpg"
              alt="展示图片"
            />
          </div>
          <div class="thumbnail-list">
-           <button class="thumb-item active" data-image="https://images.pexels.com/photos/210307/pexels-photo-210307.jpeg?auto=compress&cs=tinysrgb&w=1200" data-title="静谧湖光" data-desc="清晨的湖面宁静而广阔，薄雾在水面上轻轻飘散，远处的山峦与天空相互映衬。">
-             湖光
-           </button>
-           <button class="thumb-item" data-image="https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=1200" data-title="山间小路" data-desc="一条蜿蜒的小路穿过山林，阳光透过树叶洒在路上，仿佛通往一处秘境。">
-             山路
-           </button>
-           <button class="thumb-item" data-image="https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&w=1200" data-title="城市夜色" data-desc="华灯初上的城市夜景，霓虹与车流交织，展现出城市独有的活力与浪漫。">
-             夜色
+           <button class="thumb-item" data-image="../img/picture.jpg" data-title="" >
+             埙
            </button>
          </div>
        </section>
  
        <section class="text-section">
-         <h2 id="detailTitle" class="text-title">静谧湖光</h2>
+         <h2 id="detailTitle" class="text-title">埙</h2>
          <p id="detailDesc" class="text-content">
-           清晨的湖面宁静而广阔，薄雾在水面上轻轻飘散，远处的山峦与天空相互映衬。你可以在这里慢慢散步，听风拂过水面，感受大自然带来的安宁与放松。
+           八音中的“土音”，中国最古老的吹奏乐器之一；以陶土烧制，常见卵形，顶端为吹孔，侧面有音孔（现代多为8孔）；音色古朴、低沉、醇厚，有沧桑感，适合表现悠远、肃穆的意境，常用于古乐、琴埙合奏。
          </p>
  
          <div class="info-grid">
            <div class="info-item">
-             <span class="info-label">位置</span>
-             <span class="info-value">示例景区 · 湖畔步道</span>
+             <span class="info-label">特色</span>
+             <span class="info-value">古朴低沉音色</span>
            </div>
            <div class="info-item">
              <span class="info-label">适合人群</span>
-             <span class="info-value">家庭出游 · 情侣旅行 · 摄影爱好者</span>
+             <span class="info-value">音乐爱好者</span>
            </div>
            <div class="info-item">
              <span class="info-label">推荐时间</span>
-             <span class="info-value">清晨 / 傍晚 · 2-3 小时游览</span>
+             <span class="info-value">演奏时间</span>
            </div>
          </div>
  
@@ -65,5 +63,6 @@
    </div>
  
    <script src="script.js"></script>
+   <script src="/components/navbar/navbar.js"></script>
  </body>
  </html>

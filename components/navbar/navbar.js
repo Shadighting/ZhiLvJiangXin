@@ -11,7 +11,7 @@
       .then(function (html) {
         placeholder.innerHTML = html;
 
-        var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        var currentPage = window.location.pathname.split('/').pop() || '/index.html';
         var links = placeholder.querySelectorAll('.site-navbar__link');
         links.forEach(function (link) {
           var page = link.getAttribute('data-page') || link.getAttribute('href');
@@ -46,7 +46,7 @@
 
         if (loginButton) {
           loginButton.addEventListener('click', function () {
-            window.location.href = 'login.html';
+            window.location.href = '/login.html';
           });
         }
 
@@ -88,7 +88,7 @@
             if (userMenu) userMenu.style.display = 'none';
             if (avatarEl) avatarEl.style.display = 'none';
             if (loginButton) loginButton.style.display = 'inline-flex';
-            window.location.href = 'index.html';
+            window.location.href = '/index.html';
           });
         }
 
